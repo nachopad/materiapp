@@ -12,7 +12,7 @@ import { UserModule } from './module/user/user.module';
     MongooseModule.forRoot(
       `mongodb://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}`,
     ),
-    UserModule
+    UserModule,
   ],
   controllers: [],
   providers: [],

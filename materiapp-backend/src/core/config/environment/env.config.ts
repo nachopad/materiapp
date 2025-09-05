@@ -1,13 +1,20 @@
 import 'dotenv/config';
 import { z } from 'zod';
 
-import { commonSchema, databaseSchema, googleSchema, jwtSchema } from 'src/core/environment';
+import {
+  bycriptSchema,
+  commonSchema,
+  databaseSchema,
+  googleSchema,
+  jwtSchema,
+} from 'src/core/environment';
 
 const envSchema = z.object({
   ...commonSchema.shape,
   ...databaseSchema.shape,
   ...jwtSchema.shape,
   ...googleSchema.shape,
+  ...bycriptSchema.shape,
 });
 
 const { success, error, data } = envSchema.safeParse(process.env);
@@ -33,5 +40,6 @@ export const {
   GOOGLE_CALLBACK_URL,
   GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET,
-  GOOGLE_SECRET
+  GOOGLE_SECRET,
+  SALT_ROUNDS,
 } = data;

@@ -1,12 +1,13 @@
 import 'dotenv/config';
 import { z } from 'zod';
 
-import { commonSchema, databaseSchema, jwtSchema } from 'src/core/environment';
+import { commonSchema, databaseSchema, googleSchema, jwtSchema } from 'src/core/environment';
 
 const envSchema = z.object({
   ...commonSchema.shape,
   ...databaseSchema.shape,
   ...jwtSchema.shape,
+  ...googleSchema.shape,
 });
 
 const { success, error, data } = envSchema.safeParse(process.env);
@@ -29,4 +30,8 @@ export const {
   JWT_ACCESS_EXPIRES_IN,
   JWT_REFRESH_SECRET,
   JWT_REFRESH_EXPIRES_IN,
+  GOOGLE_CALLBACK_URL,
+  GOOGLE_CLIENT_ID,
+  GOOGLE_CLIENT_SECRET,
+  GOOGLE_SECRET
 } = data;

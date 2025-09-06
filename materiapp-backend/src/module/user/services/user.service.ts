@@ -9,9 +9,13 @@ import { Model } from 'mongoose';
 import { User } from '../schemas';
 import { plainToInstance } from 'class-transformer';
 import * as bcrypt from 'bcrypt';
-import { CreateUserDto, UpdateUserDto, UserResponseDTO } from '../dtos';
+import {
+  CreateUserDto,
+  UpdateUserDto,
+  UserResponseDTO,
+  ChangePasswordDto,
+} from '../dtos';
 import { SALT_ROUNDS } from 'src/core/config/environment';
-import { ChangePasswordDto } from '../dtos/change-password.dto';
 
 @Injectable()
 export class UserService {
@@ -20,7 +24,7 @@ export class UserService {
   async create(createUserDto: CreateUserDto): Promise<UserResponseDTO> {
     const { password, ...rest } = createUserDto;
 
-    const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+    const hashedPassword = await this.hashPassword(password);
 
     const newUser = new this.userModel({ ...rest, password: hashedPassword });
     const savedUser = await newUser.save();
@@ -34,13 +38,9 @@ export class UserService {
     email: string,
     updateUserDto: UpdateUserDto,
   ): Promise<UserResponseDTO> {
-    const updatedUser = await this.userModel
-      .findOneAndUpdate({ email }, { $set: updateUserDto }, { new: true })
-      .exec();
+    const updatedUser = await this.userModel.findOneAndUpdate({ email }, { $set: updateUserDto }, { new: true }).lean();
 
-    if (!updatedUser) {
-      throw new NotFoundException('User not found');
-    }
+    if (!updatedUser) { throw new NotFoundException('User not found') };
 
     return plainToInstance(UserResponseDTO, updatedUser, {
       excludeExtraneousValues: true,
@@ -50,40 +50,35 @@ export class UserService {
   async changePassword(
     email: string,
     changePasswordDto: ChangePasswordDto,
-  ): Promise<{ message: string }> {
-    const user = await this.userModel.findOne({ email }).exec();
+  ): Promise<UserResponseDTO> {
+    const userFound = await this.userModel.findOne({ email }).exec();
 
-    if (!user) {
-      throw new NotFoundException('User not found');
+    if (!userFound ) {
+      throw new NotFoundException('User not found.');
     }
 
-    // Check that the current password matches
-    const isMatch = await bcrypt.compare(
-      changePasswordDto.currentPassword,
-      user.password,
-    );
-    if (!isMatch) {
-      throw new BadRequestException('Current password is incorrect');
+    if (!(await this.comparePassword(changePasswordDto.currentPassword, userFound.password))) {
+      throw new BadRequestException('Current password is incorrect.');
     }
 
-    // Check that the new password is not the same as the current one
-    const isSame = await bcrypt.compare(
-      changePasswordDto.newPassword,
-      user.password,
-    );
-    if (isSame) {
-      throw new BadRequestException(
-        'New password cannot be the same as the current password',
-      );
+    if (changePasswordDto.currentPassword === changePasswordDto.newPassword) {
+      throw new BadRequestException('New password cannot be the same as the current one.');
     }
 
-    // Save the new password
-    user.password = await bcrypt.hash(
-      changePasswordDto.newPassword,
-      SALT_ROUNDS,
-    );
-    await user.save();
+    userFound.password = await this.hashPassword(changePasswordDto.newPassword);
 
-    return { message: 'Password updated successfully' };
+    await userFound.save();
+
+    return plainToInstance(UserResponseDTO, userFound, {
+      excludeExtraneousValues: true,
+    });
+  }
+
+  private async hashPassword(password: string): Promise<string> {
+    return bcrypt.hash(password, SALT_ROUNDS);
+  }
+
+  private async comparePassword(password: string, hash: string): Promise<boolean> {
+    return bcrypt.compare(password, hash);
   }
 }

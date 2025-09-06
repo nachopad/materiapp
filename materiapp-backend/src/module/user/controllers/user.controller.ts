@@ -24,7 +24,7 @@ export class UserController {
   async changePassword(
     @Param('email') email: string,
     @Body() changePasswordDto: ChangePasswordDto,
-  ): Promise<{ message: string }> {
+  ): Promise<UserResponseDTO> {
     return this.userService.changePassword(email, changePasswordDto);
   }
 }

@@ -3,7 +3,7 @@ import { SwaggerTheme, SwaggerThemeNameEnum } from "swagger-themes";
 
 export const getSwaggerConfig = () => {
     const swaggerConfig = new DocumentBuilder()
-        .setTitle('API MateriApp')
+        .setTitle('MateriApp API')
         .setDescription('MateriApp API Documentation')
         .setVersion('1.0')
         .build();

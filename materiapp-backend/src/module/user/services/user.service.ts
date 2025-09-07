@@ -7,7 +7,7 @@ import { InjectModel } from '@nestjs/mongoose';
 
 import { Model } from 'mongoose';
 import { User } from '../schemas';
-import { plainToInstance } from 'class-transformer';
+import { plainToClass, plainToInstance } from 'class-transformer';
 import * as bcrypt from 'bcrypt';
 import {
   CreateUserDto,
@@ -80,5 +80,19 @@ export class UserService {
 
   private async comparePassword(password: string, hash: string): Promise<boolean> {
     return bcrypt.compare(password, hash);
+  }
+
+  //Gets
+  async findUserByEmail(email: string): Promise<UserResponseDTO>{
+    const userFound = await this.userModel.findOne({email: email}).lean();
+    if(!userFound) { 
+      throw new NotFoundException(`User with email ${email} not found`) 
+    }
+    return plainToInstance(UserResponseDTO,userFound, { excludeExtraneousValues: true, });
+  }
+
+  async getUsers(): Promise<UserResponseDTO[]>{
+    const users = await this.userModel.find().lean();
+    return plainToInstance(UserResponseDTO, users, { excludeExtraneousValues: true});
   }
 }

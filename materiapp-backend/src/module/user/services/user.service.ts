@@ -95,4 +95,11 @@ export class UserService {
     const users = await this.userModel.find().lean();
     return plainToInstance(UserResponseDTO, users, { excludeExtraneousValues: true});
   }
+  
+  //Delete
+  async deleteUserByEmail(email: string): Promise<UserResponseDTO>{
+    await this.findUserByEmail(email);
+    const userDelete = await this.userModel.findOneAndDelete({email: email}).lean();
+    return plainToInstance(UserResponseDTO, userDelete, {excludeExtraneousValues: true});
+  }
 }

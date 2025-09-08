@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put } from '@nestjs/common';
 import { UserService } from '../services';
 import { CreateUserDto, UpdateUserDto, UserResponseDTO } from '../dtos';
 import { ChangePasswordDto } from '../dtos/change-password.dto';
@@ -53,6 +53,14 @@ export class UserController {
     }
   }
 
+  @Delete(':email')
+  async deleteUserByEmail(@Param('email', new EmailValidationPipe()) email: string): Promise<UserResponseDTO>{
+    try {
+      return await this.userService.deleteUserByEmail(email);
+    } catch (error) {
+      return error;
+    }
+  }
   
 
 

@@ -4,11 +4,14 @@ import { SwaggerModule } from '@nestjs/swagger';
 
 import { AppModule } from './app.module';
 import { getSwaggerConfig } from './core/config/swagger';
+import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.setGlobalPrefix('api/v1');
+
+  app.use(cookieParser());
 
   app.useGlobalPipes(
     new ValidationPipe({

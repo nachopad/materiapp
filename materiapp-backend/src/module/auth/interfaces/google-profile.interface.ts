@@ -1,9 +1,9 @@
 export interface GoogleProfile {
-    id: string;
-    displayName: string;
-    name: {
-        familyName: string;
-        givenName: string;
-    };
-    emails: { value: string }[];
+  id: string;
+  displayName: string;
+  name: {
+    familyName: string;
+    givenName: string;
+  };
+  emails: { value: string }[];
 }

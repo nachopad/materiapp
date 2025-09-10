@@ -15,7 +15,7 @@ export class AuthService {
   constructor(
     private userService: UserService,
     private jwtService: JwtService,
-  ) { }
+  ) {}
 
   async validateUser(email: string, password: string) {
     const user = await this.userService.findUserByEmail(email);
@@ -32,15 +32,12 @@ export class AuthService {
   }
 
   generateTokens(payload: JwtPayload) {
-    console.log(payload);
-    
     const access_token = this.jwtService.sign(payload);
     const refresh_token = this.jwtService.sign(payload, {
       secret: JWT_REFRESH_SECRET,
       expiresIn: JWT_REFRESH_EXPIRES_IN / 1000,
     });
-    console.log("Se creo los tokens");
-    
+
     return {
       access_token,
       refresh_token,
@@ -49,27 +46,30 @@ export class AuthService {
 
   refreshToken(refreshToken: string) {
     try {
-      console.log(refreshToken);
-      
-      const payload = this.jwtService.verify(refreshToken, { secret: JWT_REFRESH_SECRET });
-      console.log(payload);
-      
+      const payload = this.jwtService.verify(refreshToken, {
+        secret: JWT_REFRESH_SECRET,
+      });
+
       return this.generateTokens({ email: payload.email, sub: payload.sub });
     } catch (error) {
-      throw new UnauthorizedException("Invalid refresh token");
+      throw new UnauthorizedException(
+        'Failed to refresh token. The refresh token may be invalid or expired.',
+      );
     }
   }
 
   async verifyTokenAndResolveUser(accessToken: string): Promise<User | null> {
-    const payload: JwtPayload = this.jwtService.verify(accessToken, { secret: JWT_ACCESS_SECRET });
-    if (!payload) throw new UnauthorizedException('Invalid Token');
+    const payload: JwtPayload = this.jwtService.verify(accessToken, {
+      secret: JWT_ACCESS_SECRET,
+    });
+    if (!payload) throw new UnauthorizedException('Invalid Token.');
     return await this.userService.findUserByEmail(payload.email);
   }
 
   googleLogin(user: AuthUser) {
     const tokens = this.generateTokens({
       email: user.email,
-      sub: user._id
+      sub: user._id,
     });
     return tokens;
   }

@@ -20,8 +20,7 @@ import { GoogleProfile } from 'src/module/auth/interfaces';
 
 @Injectable()
 export class UserService {
-
-  constructor(@InjectModel(User.name) private userModel: Model<User>) { }
+  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
 
   async create(createUserDto: CreateUserDto): Promise<UserResponseDTO> {
     const { password, ...rest } = createUserDto;
@@ -45,7 +44,9 @@ export class UserService {
       .lean();
 
     if (!updatedUser) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException(
+        `Cannot update profile: No user found with email "${email}".`,
+      );
     }
 
     return updatedUser;
@@ -58,7 +59,9 @@ export class UserService {
     const userFound = await this.userModel.findOne({ email }).exec();
 
     if (!userFound) {
-      throw new NotFoundException('User not found.');
+      throw new NotFoundException(
+        `Cannot change password: No user found with email "${email}".`,
+      );
     }
 
     if (
@@ -67,12 +70,14 @@ export class UserService {
         userFound.password,
       ))
     ) {
-      throw new BadRequestException('Current password is incorrect.');
+      throw new BadRequestException(
+        'The current password you provided is incorrect.',
+      );
     }
 
     if (changePasswordDto.currentPassword === changePasswordDto.newPassword) {
       throw new BadRequestException(
-        'New password cannot be the same as the current one.',
+        'The new password cannot be the same as the current password.',
       );
     }
 
@@ -109,7 +114,9 @@ export class UserService {
   }
 
   async createOrFindGoogleUser(user: GoogleProfile): Promise<User> {
-    const existingUser = await this.userModel.findOne({ email: user.emails[0].value }).exec();
+    const existingUser = await this.userModel
+      .findOne({ email: user.emails[0].value })
+      .exec();
     if (existingUser) {
       if (!existingUser.googleId) {
         existingUser.googleId = user.id;
@@ -120,10 +127,9 @@ export class UserService {
       const createdUser = new this.userModel({
         email: user.emails[0].value,
         name: user.displayName,
-        googleId: user.id
+        googleId: user.id,
       });
       return createdUser.save();
     }
   }
-
 }

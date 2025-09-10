@@ -1,10 +1,12 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule } from '@nestjs/swagger';
-
-import { AppModule } from './app.module';
-import { getSwaggerConfig } from './core/config/swagger';
+import session from 'express-session';
 import cookieParser from 'cookie-parser';
+import { AppModule } from './app.module';
+
+import { getSwaggerConfig } from './core/config/swagger';
+import { GOOGLE_SECRET, NODE_ENV } from './core/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -18,6 +20,18 @@ async function bootstrap() {
       whitelist: true, // removes properties not defined in the DTO
       forbidNonWhitelisted: true, // throws an error if there are extra properties
       transform: true, // transforms payloads into DTO instances
+    }),
+  );
+
+   // SESSION TO GOOGLE
+  app.use(
+    session({
+      secret: GOOGLE_SECRET,
+      resave: false,
+      saveUninitialized: false,
+      cookie: {
+        secure: NODE_ENV === 'production',
+      },
     }),
   );
 

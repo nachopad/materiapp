@@ -16,10 +16,12 @@ import {
   ChangePasswordDto,
 } from '../dtos';
 import { SALT_ROUNDS } from 'src/core/config/environment';
+import { GoogleProfile } from 'src/module/auth/interfaces';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+
+  constructor(@InjectModel(User.name) private userModel: Model<User>) { }
 
   async create(createUserDto: CreateUserDto): Promise<UserResponseDTO> {
     const { password, ...rest } = createUserDto;
@@ -105,4 +107,23 @@ export class UserService {
   async comparePassword(password: string, hash: string): Promise<boolean> {
     return bcrypt.compare(password, hash);
   }
+
+  async createOrFindGoogleUser(user: GoogleProfile): Promise<User> {
+    const existingUser = await this.userModel.findOne({ email: user.emails[0].value }).exec();
+    if (existingUser) {
+      if (!existingUser.googleId) {
+        existingUser.googleId = user.id;
+        await existingUser.save();
+      }
+      return existingUser;
+    } else {
+      const createdUser = new this.userModel({
+        email: user.emails[0].value,
+        name: user.displayName,
+        googleId: user.id
+      });
+      return createdUser.save();
+    }
+  }
+
 }

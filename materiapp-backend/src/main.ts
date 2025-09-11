@@ -7,6 +7,7 @@ import { AppModule } from './app.module';
 
 import { getSwaggerConfig } from './core/config/swagger';
 import { GOOGLE_SECRET, NODE_ENV } from './core/config';
+import { UserResponseDTO } from './module/user/dtos';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -23,7 +24,7 @@ async function bootstrap() {
     }),
   );
 
-   // SESSION TO GOOGLE
+  // SESSION TO GOOGLE
   app.use(
     session({
       secret: GOOGLE_SECRET,
@@ -37,7 +38,11 @@ async function bootstrap() {
 
   // SWAGGER
   const { swaggerConfig, swaggerSetupOptions } = getSwaggerConfig();
-  const document = SwaggerModule.createDocument(app, swaggerConfig);
+  const document = SwaggerModule.createDocument(app, swaggerConfig, {
+    extraModels: [
+      UserResponseDTO
+    ]
+  });
   SwaggerModule.setup('/api/docs', app, document, swaggerSetupOptions);
 
   await app.listen(process.env.PORT ?? 3000);

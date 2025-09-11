@@ -25,7 +25,7 @@ import {
   ACCESS_TOKEN_COOKIE,
   REFRESH_TOKEN_COOKIE,
 } from '@/module/common/constants';
-import { Cookies } from '@/module/common/decorators';
+import { ApiStandardResponse, Cookies } from '@/module/common/decorators';
 import { CreateUserDto, UserResponseDTO } from '@/module/user/dtos';
 import { setCookie } from '@/shared/utils';
 import { plainToInstance } from 'class-transformer';
@@ -39,9 +39,10 @@ export class AuthController {
   ) { }
 
   @Post('register')
-  @ApiOperation({
+  @ApiStandardResponse({
     summary: 'Register a new user',
     description: 'Allows a new user to sign up for the application',
+    status: 201,
   })
   async register(@Body() createUserDto: CreateUserDto) {
     try {
@@ -64,9 +65,11 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  @ApiOperation({
+  @ApiStandardResponse({
     summary: 'Log In',
     description: 'Allows a user to log out of the application',
+    status: 201,
+    type: UserResponseDTO,
   })
   @ApiBody({ type: LoginDto })
   async login(@Req() req, @Res({ passthrough: true }) response: Response) {
@@ -82,18 +85,16 @@ export class AuthController {
       maxAge: JWT_REFRESH_EXPIRES_IN,
     });
 
-    return {
-      message: 'Login successful.',
-      user: plainToInstance(UserResponseDTO, req.user, {
-        excludeExtraneousValues: true,
-      }),
-    };
+    return plainToInstance(UserResponseDTO, req.user, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Post('logout')
-  @ApiOperation({
+  @ApiStandardResponse({
     summary: 'Logout',
     description: 'Allows a user to log out of the application',
+    status: 201,
   })
   async logout(
     @Cookies(ACCESS_TOKEN_COOKIE) accessToken: string,
@@ -119,7 +120,7 @@ export class AuthController {
   async googleAuth(@Req() request) { }
 
   @Get('google-redirect')
-  @ApiOperation({
+  @ApiStandardResponse({
     summary: 'Google Redirect',
     description: 'Handles Google redirection after authentication',
   })
@@ -147,12 +148,13 @@ export class AuthController {
   }
 
   @Get('profile')
-  @ApiOperation({
+  @ApiStandardResponse({
     summary: 'Get information from the authenticated user',
     description: 'Returns the authenticated users information',
+    type: UserResponseDTO,
   })
   @UseGuards(JwtAccessAuthGuard)
-  @ApiResponse({ status: 200, type: UserResponseDTO })
+  // @ApiResponse({ status: 200, type: UserResponseDTO })
   async getAuthUser(
     @Cookies(ACCESS_TOKEN_COOKIE) accessToken: string,
   ): Promise<UserResponseDTO> {
@@ -169,9 +171,10 @@ export class AuthController {
   }
 
   @Post('refresh')
-  @ApiOperation({
+  @ApiStandardResponse({
     summary: 'Refresh Tokens',
     description: 'Allows a user to refresh their access token',
+    status: 201,
   })
   async refreshToken(
     @Res({ passthrough: true }) response: Response,
@@ -192,10 +195,7 @@ export class AuthController {
         message: 'Access and refresh tokens have been refreshed successfully.',
       };
     } catch (error) {
-      return {
-        message:
-          'Failed to refresh token. Refresh token may be invalid or expired.',
-      };
+      throw error;
     }
   }
 }

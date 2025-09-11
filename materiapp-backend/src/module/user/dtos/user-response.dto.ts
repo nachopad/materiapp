@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose, Transform } from 'class-transformer';
+import { Exclude, Expose, Transform } from 'class-transformer';
 
+@Exclude()
 export class UserResponseDTO {
   @ApiProperty()
   @Expose()
@@ -19,12 +20,15 @@ export class UserResponseDTO {
   @Expose()
   name: string;
 
+  @ApiProperty()
   @Expose()
   createdAt: Date;
 
+  @ApiProperty()
   @Expose()
   updatedAt: Date;
 
+  @ApiProperty()
   @Expose()
   get isGoogleUser(): boolean {
     return !!this.googleId;

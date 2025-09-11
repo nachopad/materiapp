@@ -4,23 +4,23 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-
-import { Model } from 'mongoose';
-import { User } from '../schemas';
-import { plainToInstance } from 'class-transformer';
 import * as bcrypt from 'bcrypt';
+import { Model } from 'mongoose';
+
+import { SALT_ROUNDS } from '@/core/config/environment';
+import { GoogleProfile } from '@/module/auth/interfaces';
+import { plainToInstance } from 'class-transformer';
 import {
+  ChangePasswordDto,
   CreateUserDto,
   UpdateUserDto,
   UserResponseDTO,
-  ChangePasswordDto,
 } from '../dtos';
-import { SALT_ROUNDS } from 'src/core/config/environment';
-import { GoogleProfile } from 'src/module/auth/interfaces';
+import { User } from '../schemas';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+  constructor(@InjectModel(User.name) private userModel: Model<User>) { }
 
   async create(createUserDto: CreateUserDto): Promise<UserResponseDTO> {
     const { password, ...rest } = createUserDto;

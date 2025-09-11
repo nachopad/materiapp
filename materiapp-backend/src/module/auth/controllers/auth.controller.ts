@@ -10,33 +10,33 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
-
 import type { Response } from 'express';
-import { UserService } from 'src/module/user/services';
-import { AuthService } from '../services/auth.service';
+
+import { UserService } from '@/module/user/services';
 import {
   GoogleOAuthGuard,
   JwtAccessAuthGuard,
   LocalAuthGuard,
 } from '../guards';
+import { AuthService } from '../services/auth.service';
 
-import { LoginDto } from '../dtos/login.dto';
-import { setCookie } from 'src/shared/utils/set-cookie.util';
+import { JWT_ACCESS_EXPIRES_IN, JWT_REFRESH_EXPIRES_IN } from '@/core/config';
 import {
   ACCESS_TOKEN_COOKIE,
   REFRESH_TOKEN_COOKIE,
-} from 'src/module/common/constants';
-import { JWT_ACCESS_EXPIRES_IN, JWT_REFRESH_EXPIRES_IN } from 'src/core/config';
-import { CreateUserDto, UserResponseDTO } from 'src/module/user/dtos';
+} from '@/module/common/constants';
+import { Cookies } from '@/module/common/decorators';
+import { CreateUserDto, UserResponseDTO } from '@/module/user/dtos';
+import { setCookie } from '@/shared/utils';
 import { plainToInstance } from 'class-transformer';
-import { Cookies } from 'src/module/common/decorators';
+import { LoginDto } from '../dtos/login.dto';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private userService: UserService,
     private authService: AuthService,
-  ) {}
+  ) { }
 
   @Post('register')
   @ApiOperation({
@@ -116,7 +116,7 @@ export class AuthController {
   })
   @ApiResponse({ status: 302, description: 'Redirect to Google OAuth2' })
   @UseGuards(GoogleOAuthGuard)
-  async googleAuth(@Req() request) {}
+  async googleAuth(@Req() request) { }
 
   @Get('google-redirect')
   @ApiOperation({

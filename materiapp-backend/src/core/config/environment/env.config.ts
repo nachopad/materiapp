@@ -7,7 +7,7 @@ import {
   databaseSchema,
   googleSchema,
   jwtSchema,
-} from 'src/core/environment';
+} from '@/core/environment';
 
 const envSchema = z.object({
   ...commonSchema.shape,

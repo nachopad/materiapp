@@ -1,5 +1,6 @@
-import { NODE_ENV } from 'src/core/config';
 import { CookieOptions, Response } from 'express';
+
+import { NODE_ENV } from '@/core/config';
 
 export const setCookie = (
   response: Response,

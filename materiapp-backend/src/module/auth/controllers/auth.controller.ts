@@ -25,13 +25,14 @@ import {
   ACCESS_TOKEN_COOKIE,
   REFRESH_TOKEN_COOKIE,
 } from '@/module/common/constants';
-import { ApiStandardResponse, Cookies } from '@/module/common/decorators';
+import { ApiStandardResponse, ApiVersionHeader, Cookies } from '@/module/common/decorators';
 import { CreateUserDto, UserResponseDTO } from '@/module/user/dtos';
 import { setCookie } from '@/shared/utils';
 import { plainToInstance } from 'class-transformer';
 import { LoginDto } from '../dtos/login.dto';
 
-@Controller('auth')
+@ApiVersionHeader('1')
+@Controller({ path: 'auth', version: ['1'] })
 export class AuthController {
   constructor(
     private userService: UserService,

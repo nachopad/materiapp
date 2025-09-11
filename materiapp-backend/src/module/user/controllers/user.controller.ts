@@ -1,3 +1,4 @@
+import { ApiStandardResponse, ApiVersionHeader } from '@/module/common/decorators';
 import {
   Body,
   Controller,
@@ -8,14 +9,14 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { UserService } from '../services';
+import { plainToInstance } from 'class-transformer';
 import { CreateUserDto, UpdateUserDto, UserResponseDTO } from '../dtos';
 import { ChangePasswordDto } from '../dtos/change-password.dto';
 import { EmailValidationPipe } from '../pipes';
-import { plainToInstance } from 'class-transformer';
-import { ApiStandardResponse } from '@/module/common/decorators';
+import { UserService } from '../services';
 
-@Controller('user')
+@ApiVersionHeader('1')
+@Controller({ path: 'user', version: '1' })
 export class UserController {
   constructor(private readonly userService: UserService) { }
 
@@ -69,6 +70,12 @@ export class UserController {
   }
 
   @Get()
+  @ApiStandardResponse({
+    summary: 'Get all users',
+    description: 'Retrieves a list of all users in the system',
+    type: UserResponseDTO,
+    isArray: true,
+  })
   async getUsers(): Promise<UserResponseDTO[]> {
     const users = await this.userService.getUsers();
     return plainToInstance(UserResponseDTO, users, {
@@ -77,6 +84,11 @@ export class UserController {
   }
 
   @Get(':email')
+  @ApiStandardResponse({
+    summary: 'Find user by email',
+    description: 'Retrieves a user identified by email from the system',
+    type: UserResponseDTO,
+  })
   async findUserByEmail(
     @Param('email', new EmailValidationPipe()) email: string,
   ): Promise<UserResponseDTO> {

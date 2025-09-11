@@ -1,18 +1,19 @@
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule } from '@nestjs/swagger';
-import session from 'express-session';
 import cookieParser from 'cookie-parser';
-import { AppModule } from './app.module';
+import session from 'express-session';
 
-import { getSwaggerConfig } from './core/config/swagger';
+import { AppModule } from './app.module';
 import { GOOGLE_SECRET, NODE_ENV, PORT } from './core/config';
+import { getSwaggerConfig } from './core/config/swagger';
+import { ACCEPT_VERSION_HEADER } from './module/common/constants';
 import { UserResponseDTO } from './module/user/dtos';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.setGlobalPrefix('api/v1');
+  app.setGlobalPrefix('api');
 
   app.use(cookieParser());
 
@@ -23,6 +24,11 @@ async function bootstrap() {
       transform: true, // transforms payloads into DTO instances
     }),
   );
+
+  app.enableVersioning({
+    type: VersioningType.HEADER,
+    header: ACCEPT_VERSION_HEADER,
+  });
 
   // SESSION TO GOOGLE
   app.use(

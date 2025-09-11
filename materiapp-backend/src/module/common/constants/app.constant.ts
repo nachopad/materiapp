@@ -1,0 +1,1 @@
+export const ACCEPT_VERSION_HEADER = 'Accept-Version';

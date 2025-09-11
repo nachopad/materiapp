@@ -6,7 +6,7 @@ import cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
 
 import { getSwaggerConfig } from './core/config/swagger';
-import { GOOGLE_SECRET, NODE_ENV } from './core/config';
+import { GOOGLE_SECRET, NODE_ENV, PORT } from './core/config';
 import { UserResponseDTO } from './module/user/dtos';
 
 async function bootstrap() {
@@ -45,6 +45,6 @@ async function bootstrap() {
   });
   SwaggerModule.setup('/api/docs', app, document, swaggerSetupOptions);
 
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(PORT ?? 3000);
 }
 bootstrap();

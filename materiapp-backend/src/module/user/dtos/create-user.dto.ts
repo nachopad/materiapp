@@ -1,9 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsString, MaxLength, MinLength } from 'class-validator';
+import { IsEmail, IsString, Matches, MaxLength, MinLength } from 'class-validator';
 
 export class CreateUserDto {
   @IsString()
   @MinLength(4, { message: 'Username must be at least 4 characters long' })
+  @Matches(/^[a-zA-ZÀ-ÿ\s'-]+$/, { message: 'Name contains invalid characters', })
   @ApiProperty({ description: 'Full name of the user', example: 'John Doe' })
   name: string;
 

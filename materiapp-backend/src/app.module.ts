@@ -8,6 +8,7 @@ import {
 } from './core/config/environment';
 import { HttpExceptionFilter, TransformResponseInterceptor } from './module/common/interceptors';
 import { UserModule } from './module/user/user.module';
+import { AuthModule } from './module/auth/auth.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { UserModule } from './module/user/user.module';
       `mongodb://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}`,
     ),
     UserModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [

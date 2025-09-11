@@ -1,12 +1,22 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { UserService } from '../services';
 import { CreateUserDto, UpdateUserDto, UserResponseDTO } from '../dtos';
 import { ChangePasswordDto } from '../dtos/change-password.dto';
 import { EmailValidationPipe } from '../pipes';
+import { plainToInstance } from 'class-transformer';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) { }
+  constructor(private readonly userService: UserService) {}
 
   @Post()
   async create(@Body() createUserDto: CreateUserDto): Promise<UserResponseDTO> {
@@ -18,7 +28,13 @@ export class UserController {
     @Param('email') email: string,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<UserResponseDTO> {
-    return this.userService.updateProfile(email, updateUserDto);
+    const updatedUser = await this.userService.updateProfile(
+      email,
+      updateUserDto,
+    );
+    return plainToInstance(UserResponseDTO, updatedUser, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Patch(':email/password')
@@ -26,42 +42,48 @@ export class UserController {
     @Param('email') email: string,
     @Body() changePasswordDto: ChangePasswordDto,
   ): Promise<UserResponseDTO> {
-    return this.userService.changePassword(email, changePasswordDto);
+    const updatedPassword = await this.userService.changePassword(
+      email,
+      changePasswordDto,
+    );
+    return plainToInstance(UserResponseDTO, updatedPassword, {
+      excludeExtraneousValues: true,
+    });
   }
 
-  
-  /** Methods to get **/
   @Get()
   async getUsers(): Promise<UserResponseDTO[]> {
-    return this.userService.getUsers();
+    const users = await this.userService.getUsers();
+    return plainToInstance(UserResponseDTO, users, {
+      excludeExtraneousValues: true,
+    });
   }
-  /**
-   * Validación para que lo que llegue tenga formato email y evitar buscar en la BD,
-   * Mejora el rendimiento
-   * Opciones: 
-   *          Pipes --> Me lo dijo la IA XD
-   *          DTO ---> Solo para validar el email? me parece raro, pero queda para hablarlo
-   * @param email 
-   * @returns User found
-   */
+
   @Get(':email')
-  async findUserByEmail(@Param('email', new EmailValidationPipe()) email: string): Promise<UserResponseDTO> {
+  async findUserByEmail(
+    @Param('email', new EmailValidationPipe()) email: string,
+  ): Promise<UserResponseDTO> {
     try {
-      return await this.userService.findUserByEmail(email);
+      const userFound = await this.userService.findUserByEmail(email);
+      return plainToInstance(UserResponseDTO, userFound, {
+        excludeExtraneousValues: true,
+      });
     } catch (error) {
       return error;
     }
   }
 
   @Delete(':email')
-  async deleteUserByEmail(@Param('email', new EmailValidationPipe()) email: string): Promise<UserResponseDTO>{
+  async deleteUserByEmail(
+    @Param('email', new EmailValidationPipe()) email: string,
+  ): Promise<UserResponseDTO> {
     try {
-      return await this.userService.deleteUserByEmail(email);
+      const userDeleted = await this.userService.deleteUserByEmail(email);
+      return plainToInstance(UserResponseDTO, userDeleted, {
+        excludeExtraneousValues: true,
+      });
     } catch (error) {
       return error;
     }
   }
-  
-
-
 }

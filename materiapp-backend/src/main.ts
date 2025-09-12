@@ -9,6 +9,7 @@ import { GOOGLE_SECRET, NODE_ENV, PORT } from './core/config';
 import { getSwaggerConfig } from './core/config/swagger';
 import { ACCEPT_VERSION_HEADER } from './module/common/constants';
 import { UserResponseDTO } from './module/user/dtos';
+import { CareerResponseDTO } from './module/career/dtos';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -46,7 +47,8 @@ async function bootstrap() {
   const { swaggerConfig, swaggerSetupOptions } = getSwaggerConfig();
   const document = SwaggerModule.createDocument(app, swaggerConfig, {
     extraModels: [
-      UserResponseDTO
+      UserResponseDTO,
+      CareerResponseDTO
     ]
   });
   SwaggerModule.setup('/api/docs', app, document, swaggerSetupOptions);

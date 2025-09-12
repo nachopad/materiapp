@@ -9,6 +9,7 @@ import {
 import { HttpExceptionFilter, TransformResponseInterceptor } from './module/common/interceptors';
 import { UserModule } from './module/user/user.module';
 import { AuthModule } from './module/auth/auth.module';
+import { CareerModule } from './module/career/career.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { AuthModule } from './module/auth/auth.module';
       `mongodb://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}`,
     ),
     UserModule,
+    CareerModule,
     AuthModule,
   ],
   controllers: [],

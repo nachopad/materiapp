@@ -16,7 +16,20 @@ export class HttpExceptionFilter implements ExceptionFilter {
         const ctx = host.switchToHttp();
         const response = ctx.getResponse<Response>();
         const request = ctx.getRequest<Request>();
+
         const status = exception.getStatus();
+
+        let errorMessage = 'Internal Server Error';
+        if (exception instanceof HttpException) {
+            const exceptionResponse = exception.getResponse();
+
+            // Si `exceptionResponse` es un objeto, tomamos sus valores directamente
+            if (typeof exceptionResponse === 'object' && exceptionResponse !== null) {
+                errorMessage = (exceptionResponse as any).message || errorMessage;
+            } else {
+                errorMessage = String(exceptionResponse);
+            }
+        }
 
         const exceptionResponse: ErrorResponse = {
             _metadata: {
@@ -24,7 +37,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
                 timestamp: new Date().toISOString(),
                 path: request.url,
             },
-            message: exception.message
+            message: errorMessage
         }
 
         response

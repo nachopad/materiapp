@@ -8,7 +8,7 @@ import {
 } from './core/config/environment';
 import { AuthModule } from './module/auth/auth.module';
 import { CollegeModule } from './module/college/college.module';
-import { HttpExceptionFilter, TransformResponseInterceptor } from './module/common/interceptors';
+import { AllExceptionFilter, TransformResponseInterceptor } from './module/common/interceptors';
 import { UserModule } from './module/user/user.module';
 
 @Module({
@@ -24,7 +24,7 @@ import { UserModule } from './module/user/user.module';
   providers: [
     {
       provide: APP_FILTER,
-      useClass: HttpExceptionFilter,
+      useClass: AllExceptionFilter,
     },
     {
       provide: APP_INTERCEPTOR,

@@ -10,24 +10,29 @@ interface ErrorResponse {
     message: string | string[];
 }
 
-@Catch(HttpException)
-export class HttpExceptionFilter implements ExceptionFilter {
+@Catch()
+export class AllExceptionFilter implements ExceptionFilter {
     catch(exception: HttpException, host: ArgumentsHost) {
         const ctx = host.switchToHttp();
         const response = ctx.getResponse<Response>();
         const request = ctx.getRequest<Request>();
 
-        const status = exception.getStatus();
-
+        let status = 500;
         let errorMessage = 'Internal Server Error';
-        if (exception instanceof HttpException) {
-            const exceptionResponse = exception.getResponse();
 
-            // Si `exceptionResponse` es un objeto, tomamos sus valores directamente
-            if (typeof exceptionResponse === 'object' && exceptionResponse !== null) {
-                errorMessage = (exceptionResponse as any).message || errorMessage;
+        if (exception instanceof Error) {
+            if (exception instanceof HttpException) {
+                status = exception.getStatus();
+                const exceptionResponse = exception.getResponse();
+                if (typeof exceptionResponse === 'object' && exceptionResponse !== null) {
+                    errorMessage = (exceptionResponse as any).message || errorMessage;
+                } else {
+                    errorMessage = String(exceptionResponse);
+                }
             } else {
-                errorMessage = String(exceptionResponse);
+                if (typeof exception === 'object' && exception !== null) {
+                    errorMessage = (exception as any).message || errorMessage;
+                }
             }
         }
 

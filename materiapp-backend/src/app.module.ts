@@ -6,9 +6,13 @@ import {
   DATABASE_NAME,
   DATABASE_PORT,
 } from './core/config/environment';
-import { HttpExceptionFilter, TransformResponseInterceptor } from './module/common/interceptors';
+import {
+  HttpExceptionFilter,
+  TransformResponseInterceptor,
+} from './module/common/interceptors';
 import { UserModule } from './module/user/user.module';
 import { AuthModule } from './module/auth/auth.module';
+import { SubjectModule } from './module/subject/subject.module';
 
 @Module({
   imports: [
@@ -16,6 +20,7 @@ import { AuthModule } from './module/auth/auth.module';
       `mongodb://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}`,
     ),
     UserModule,
+    SubjectModule,
     AuthModule,
   ],
   controllers: [],
@@ -28,6 +33,6 @@ import { AuthModule } from './module/auth/auth.module';
       provide: APP_INTERCEPTOR,
       useClass: TransformResponseInterceptor,
     },
-  ]
+  ],
 })
-export class AppModule { }
+export class AppModule {}

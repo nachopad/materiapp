@@ -1,11 +1,12 @@
+import { UuidToString } from '@/module/common/decorators';
 import { ApiProperty } from '@nestjs/swagger';
-import { Exclude, Expose, Transform } from 'class-transformer';
+import { Exclude, Expose } from 'class-transformer';
 
 @Exclude()
 export class UserResponseDTO {
   @ApiProperty()
   @Expose()
-  @Transform(({ value }) => value?.toString())
+  @UuidToString()
   _id: string;
 
   @ApiProperty()

@@ -7,6 +7,7 @@ import session from 'express-session';
 import { AppModule } from './app.module';
 import { GOOGLE_SECRET, NODE_ENV, PORT } from './core/config';
 import { getSwaggerConfig } from './core/config/swagger';
+import { CollegeResponseDTO } from './module/college/dtos';
 import { ACCEPT_VERSION_HEADER } from './module/common/constants';
 import { UserResponseDTO } from './module/user/dtos';
 
@@ -46,7 +47,8 @@ async function bootstrap() {
   const { swaggerConfig, swaggerSetupOptions } = getSwaggerConfig();
   const document = SwaggerModule.createDocument(app, swaggerConfig, {
     extraModels: [
-      UserResponseDTO
+      UserResponseDTO,
+      CollegeResponseDTO
     ]
   });
   SwaggerModule.setup('/api/docs', app, document, swaggerSetupOptions);

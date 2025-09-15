@@ -6,9 +6,10 @@ import {
   DATABASE_NAME,
   DATABASE_PORT,
 } from './core/config/environment';
+import { AuthModule } from './module/auth/auth.module';
+import { CollegeModule } from './module/college/college.module';
 import { HttpExceptionFilter, TransformResponseInterceptor } from './module/common/interceptors';
 import { UserModule } from './module/user/user.module';
-import { AuthModule } from './module/auth/auth.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { AuthModule } from './module/auth/auth.module';
     ),
     UserModule,
     AuthModule,
+    CollegeModule
   ],
   controllers: [],
   providers: [

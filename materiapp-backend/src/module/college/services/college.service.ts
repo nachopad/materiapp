@@ -1,0 +1,37 @@
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import { Model } from "mongoose";
+import { CreateCollegeDto } from "../dtos";
+import { College } from "../schemas";
+
+@Injectable()
+export class CollegeService {
+    constructor(@InjectModel(College.name) private collegeModel: Model<College>) { }
+
+    async create(createCollegeDto: CreateCollegeDto): Promise<College> {
+        const newCollege = new this.collegeModel(createCollegeDto);
+        return await newCollege.save();
+    }
+
+    async update(id: string, updateCollegeDto: Partial<CreateCollegeDto>): Promise<College> {
+        const updatedCollege = await this.collegeModel.findByIdAndUpdate(id, updateCollegeDto, { new: true }).exec();
+        if (!updatedCollege) throw new NotFoundException(`Cannot update college: No college found with id: ${id}`);
+        return updatedCollege;
+    }
+
+    async getColleges(): Promise<College[]> {
+        return this.collegeModel.find().lean();
+    }
+
+    async getCollegeById(id: string): Promise<College> {
+        const collegeFound = await this.collegeModel.findById(id).lean();
+        if (!collegeFound) throw new NotFoundException(`No college found with id: ${id}`);
+        return collegeFound;
+    }
+
+    async deleteCollegeById(id: string): Promise<College> {
+        const deletedCollege = await this.collegeModel.findByIdAndDelete(id).exec();
+        if (!deletedCollege) throw new NotFoundException(`Cannot delete college: No college found with id: ${id}`);
+        return deletedCollege;
+    }
+}

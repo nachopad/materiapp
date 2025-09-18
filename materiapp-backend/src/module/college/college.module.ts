@@ -10,6 +10,6 @@ import { CollegeService } from "./services";
     ],
     controllers: [CollegeController],
     providers: [CollegeService],
-    exports: [],
+    exports: [CollegeService],
 })
 export class CollegeModule { }

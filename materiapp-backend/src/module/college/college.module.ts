@@ -12,6 +12,6 @@ import { CareerModule } from "../career/career.module";
     ],
     controllers: [CollegeController],
     providers: [CollegeService],
-    exports: [],
+    exports: [CollegeService],
 })
 export class CollegeModule { }

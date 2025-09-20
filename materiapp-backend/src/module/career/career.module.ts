@@ -1,19 +1,19 @@
-import { Module } from "@nestjs/common";
+import { forwardRef, Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 import { Career, CareerSchema } from "./schemas/career.schema";
 import { CareerController } from "./controllers";
-import { CarreerService } from "./services";
+import { CareerService } from "./services";
 import { CollegeModule } from "../college/college.module";
 import { SubjectModule } from "../subject/subject.module";
 
 @Module({
-    imports:[
-        MongooseModule.forFeature([ { name: Career.name, schema: CareerSchema } ]),
-        CollegeModule,
+    imports: [
+        MongooseModule.forFeature([{ name: Career.name, schema: CareerSchema }]),
+        forwardRef(() => CollegeModule),
         SubjectModule
     ],
     controllers: [CareerController],
-    providers:[CarreerService],
-    exports: [CarreerService],
+    providers: [CareerService],
+    exports: [CareerService],
 })
-export class CareerModule{}
+export class CareerModule { }

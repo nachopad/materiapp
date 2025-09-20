@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, forwardRef, Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 
@@ -9,11 +9,13 @@ import { CareerResponseDTO, CreateCareerDto, UpdateCareerDto } from "../dtos";
 import { Career } from "../schemas";
 
 @Injectable()
-export class CarreerService {
+export class CareerService {
 
-    constructor(@InjectModel(Career.name) private careerModel: Model<Career>,
-        private collegeService: CollegeService,
-        private subjectService: SubjectService) { }
+    constructor(
+        @InjectModel(Career.name) private careerModel: Model<Career>,
+        @Inject(forwardRef(() => CollegeService)) private collegeService: CollegeService,
+        private subjectService: SubjectService,
+    ) { }
 
     async createCareer(createCareerDTO: CreateCareerDto): Promise<CareerResponseDTO> {
         if (createCareerDTO.collegeId) await this.collegeService.getCollegeById(createCareerDTO.collegeId);

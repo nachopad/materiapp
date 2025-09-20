@@ -32,7 +32,7 @@ export class CollegeService {
     }
 
     async getColleges(): Promise<College[]> {
-        return this.collegeModel.find().lean();
+        return this.collegeModel.find().populate('careers').lean();
     }
 
     async getCollegeById(id: string): Promise<College> {

@@ -1,6 +1,6 @@
 import { xssSafeString, xssSafeStringMessage } from "@/shared/utils";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { HydratedDocument } from "mongoose";
+import { HydratedDocument, Types } from "mongoose";
 
 export type CollegeDocument = HydratedDocument<College>;
 
@@ -15,6 +15,9 @@ export class College {
         }
     })
     name: string;
+
+    @Prop({ type: [{ type: Types.ObjectId, ref: 'Career' }], required: false })
+    careers: Types.ObjectId[];
 }
 
 export const CollegeSchema = SchemaFactory.createForClass(College);

@@ -10,15 +10,19 @@ import { AuthModule } from './module/auth/auth.module';
 import { CollegeModule } from './module/college/college.module';
 import { AllExceptionFilter, TransformResponseInterceptor } from './module/common/interceptors';
 import { UserModule } from './module/user/user.module';
+import { CareerModule } from './module/career/career.module';
+import { SubjectModule } from './module/subject/subject.module';
 
 @Module({
   imports: [
     MongooseModule.forRoot(
       `mongodb://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}`,
     ),
-    UserModule,
     AuthModule,
-    CollegeModule
+    UserModule,
+    CareerModule,
+    SubjectModule,
+    CollegeModule,
   ],
   controllers: [],
   providers: [
@@ -30,6 +34,6 @@ import { UserModule } from './module/user/user.module';
       provide: APP_INTERCEPTOR,
       useClass: TransformResponseInterceptor,
     },
-  ]
+  ],
 })
-export class AppModule { }
+export class AppModule {}

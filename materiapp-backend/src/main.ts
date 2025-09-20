@@ -10,6 +10,8 @@ import { getSwaggerConfig } from './core/config/swagger';
 import { CollegeResponseDTO } from './module/college/dtos';
 import { ACCEPT_VERSION_HEADER } from './module/common/constants';
 import { UserResponseDTO } from './module/user/dtos';
+import { CareerResponseDTO } from './module/career/dtos';
+import { SubjectResponseDto } from './module/subject/dtos';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -48,7 +50,9 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, swaggerConfig, {
     extraModels: [
       UserResponseDTO,
-      CollegeResponseDTO
+      CareerResponseDTO,
+      SubjectResponseDto,
+      CollegeResponseDTO,
     ]
   });
   SwaggerModule.setup('/api/docs', app, document, swaggerSetupOptions);

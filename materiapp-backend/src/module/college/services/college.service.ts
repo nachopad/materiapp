@@ -1,3 +1,4 @@
+import { CarreerService } from "@/module/career/services";
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
@@ -6,9 +7,15 @@ import { College } from "../schemas";
 
 @Injectable()
 export class CollegeService {
-    constructor(@InjectModel(College.name) private collegeModel: Model<College>) { }
+    constructor(
+        @InjectModel(College.name) private collegeModel: Model<College>,
+        private careerService: CarreerService,
+    ) { }
 
     async create(createCollegeDto: CreateCollegeDto): Promise<College> {
+
+        createCollegeDto.careers = await this.careerService.validateCareerIds(createCollegeDto.careers ?? []);
+
         const newCollege = new this.collegeModel(createCollegeDto);
         return await newCollege.save();
     }

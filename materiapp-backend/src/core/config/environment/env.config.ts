@@ -7,6 +7,7 @@ import {
   databaseSchema,
   googleSchema,
   jwtSchema,
+  mailSchema,
 } from '@/core/environment';
 
 const envSchema = z.object({
@@ -15,6 +16,7 @@ const envSchema = z.object({
   ...jwtSchema.shape,
   ...googleSchema.shape,
   ...bycriptSchema.shape,
+  ...mailSchema.shape,
 });
 
 const { success, error, data } = envSchema.safeParse(process.env);
@@ -42,4 +44,9 @@ export const {
   GOOGLE_CLIENT_SECRET,
   GOOGLE_SECRET,
   SALT_ROUNDS,
+  HOST_MAIL,
+  PORT_MAIL,
+  SECURE,
+  USER_REMITENTE,
+  PASSWORD_APP,
 } = data;

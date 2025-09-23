@@ -1,0 +1,35 @@
+doctype html
+html
+  head
+    meta(charset="UTF-8")
+    title Verifica tu cuenta
+    style.
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f9f9f9;
+        padding: 20px;
+      }
+      .container {
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      }
+      .button {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+      }
+  body
+    .container
+      h1 Hola #{username}
+      p Gracias por registrarte en nuestra plataforma.
+      p Para activar tu cuenta, haz clic en el siguiente botón:
+      p
+        a.button(href=verificationLink) Verificar cuenta
+      p Si no solicitaste este registro, puedes ignorar este mensaje.
+      hr
+      small Este correo fue generado automáticamente. No respondas a este mensaje.

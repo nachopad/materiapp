@@ -2,13 +2,14 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
 import { Model } from 'mongoose';
 
-import { SALT_ROUNDS } from '@/core/config/environment';
-import { GoogleProfile } from '@/module/auth/interfaces';
+import { JWT_ACCESS_SECRET, SALT_ROUNDS } from '@/core/config/environment';
+import { GoogleProfile, JwtPayload } from '@/module/auth/interfaces';
 import { plainToInstance } from 'class-transformer';
 import {
   ChangePasswordDto,
@@ -17,10 +18,14 @@ import {
   UserResponseDTO,
 } from '../dtos';
 import { User } from '../schemas';
+import { mailService } from '@/module/mail/services/mail.service';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectModel(User.name) private userModel: Model<User>) { }
+  constructor(@InjectModel(User.name) private userModel: Model<User>,
+    private readonly mailService: mailService,
+    private readonly jwtService: JwtService) { }
 
   async create(createUserDto: CreateUserDto): Promise<UserResponseDTO> {
     const { password, ...rest } = createUserDto;
@@ -30,10 +35,36 @@ export class UserService {
     const newUser = new this.userModel({ ...rest, password: hashedPassword });
     const savedUser = await newUser.save();
 
+    const contextEmail = await this.generateTokenEmailActivate(createUserDto.email, savedUser._id.toString(), createUserDto.name);
+    await this.mailService.sendVerificationEmail(savedUser.email, contextEmail);
+
     return plainToInstance(UserResponseDTO, savedUser, {
       excludeExtraneousValues: true,
     });
   }
+
+  async generateTokenEmailActivate(email: string, id: string, name: string) {
+    const tokenForValidate = await this.jwtService.sign({ email: email, sub: id }, { secret: JWT_ACCESS_SECRET, expiresIn: '2m' });
+    return {
+      username: name,
+      verificationLink: `api/v1/auth/validateAccount/${email}?token=${tokenForValidate}`
+    }
+  }
+
+  async activeAccount(email: string, tokenForValidate: string): Promise<User> {
+    try {
+      const payload: JwtPayload = this.jwtService.verify(tokenForValidate, {
+        secret: JWT_ACCESS_SECRET,
+      });
+      await this.userModel.findOneAndUpdate({ email: email }, { validateAccount: true }, { new: true });
+      return await this.findUserByEmail(email);
+    } catch (error) {
+      if (error.name == "TokenExpiredError") throw new UnauthorizedException('The token has expired. Please try again later.');
+      throw new UnauthorizedException('Token inválido.');
+    }
+
+  }
+
 
   async updateProfile(
     email: string,
@@ -128,7 +159,9 @@ export class UserService {
         email: user.emails[0].value,
         name: user.displayName,
         googleId: user.id,
+        validateAccount: true
       });
+      await this.mailService.sendWelcome(user.emails[0].value, user.displayName)
       return createdUser.save();
     }
   }

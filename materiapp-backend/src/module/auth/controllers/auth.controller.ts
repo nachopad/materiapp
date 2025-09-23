@@ -3,7 +3,9 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Post,
+  Query,
   Req,
   Res,
   UnauthorizedException,
@@ -30,6 +32,7 @@ import { CreateUserDto, UserResponseDTO } from '@/module/user/dtos';
 import { setCookie } from '@/shared/utils';
 import { plainToInstance } from 'class-transformer';
 import { LoginDto } from '../dtos/login.dto';
+import { EmailValidationPipe } from '@/module/user/pipes';
 
 @ApiVersionHeader('1')
 @Controller({ path: 'auth', version: ['1'] })
@@ -62,6 +65,20 @@ export class AuthController {
         'Failed to register user. Please check the data and try again.',
       );
     }
+  }
+
+  @Get('validateAccount/:email')
+  @ApiStandardResponse({
+    summary: 'Account Validate',
+    description: 'Allow validate email account',
+    status: 200,
+    type: UserResponseDTO,
+  })
+  async validateAccount(@Param('email', new EmailValidationPipe()) email: string, @Query('token') tokenForValidate: string): Promise<UserResponseDTO>{
+    const accountValidated = await this.userService.activeAccount(email, tokenForValidate);
+    return plainToInstance(UserResponseDTO, accountValidated, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @UseGuards(LocalAuthGuard)

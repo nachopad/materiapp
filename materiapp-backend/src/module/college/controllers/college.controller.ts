@@ -2,7 +2,7 @@ import { JwtAccessAuthGuard } from "@/module/auth/guards";
 import { ApiStandardResponse, ApiVersionHeader } from "@/module/common/decorators";
 import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
-import { CollegeResponseDTO, CreateCollegeDto, UpdateCollegeDto } from "../dtos";
+import { CollegeResponseDto, CreateCollegeDto, UpdateCollegeDto } from "../dtos";
 import { CollegeService } from "../services";
 
 @ApiVersionHeader('1')
@@ -15,15 +15,15 @@ export class CollegeController {
     @ApiStandardResponse({
         summary: 'Create a new college',
         description: 'Creates a new college in the system',
-        type: CollegeResponseDTO,
+        type: CollegeResponseDto,
         status: 201,
     })
     @UseGuards(JwtAccessAuthGuard)
     async create(
         @Body() createCollegeDto: CreateCollegeDto
-    ): Promise<CollegeResponseDTO> {
+    ): Promise<CollegeResponseDto> {
         const college = await this.collegeService.create(createCollegeDto);
-        return plainToInstance(CollegeResponseDTO, college, {
+        return plainToInstance(CollegeResponseDto, college, {
             excludeExtraneousValues: true,
         });
     }
@@ -32,15 +32,15 @@ export class CollegeController {
     @ApiStandardResponse({
         summary: 'Update college information',
         description: 'Updates the information of an existing college identified by ID',
-        type: CollegeResponseDTO,
+        type: CollegeResponseDto,
     })
     @UseGuards(JwtAccessAuthGuard)
     async update(
         @Param('id') id: string,
         @Body() updateCollegeDto: UpdateCollegeDto
-    ): Promise<CollegeResponseDTO> {
+    ): Promise<CollegeResponseDto> {
         const college = await this.collegeService.update(id, updateCollegeDto);
-        return plainToInstance(CollegeResponseDTO, college, {
+        return plainToInstance(CollegeResponseDto, college, {
             excludeExtraneousValues: true,
         });
     }
@@ -49,12 +49,12 @@ export class CollegeController {
     @ApiStandardResponse({
         summary: 'Get all colleges',
         description: 'Retrieves a list of all colleges in the system',
-        type: CollegeResponseDTO,
+        type: CollegeResponseDto,
         isArray: true,
     })
-    async getColleges(): Promise<CollegeResponseDTO[]> {
+    async getColleges(): Promise<CollegeResponseDto[]> {
         const colleges = await this.collegeService.getColleges();
-        return plainToInstance(CollegeResponseDTO, colleges, {
+        return plainToInstance(CollegeResponseDto, colleges, {
             excludeExtraneousValues: true,
         });
     }
@@ -63,11 +63,11 @@ export class CollegeController {
     @ApiStandardResponse({
         summary: 'Get college by ID',
         description: 'Retrieves a college by its ID',
-        type: CollegeResponseDTO,
+        type: CollegeResponseDto,
     })
-    async getCollegeById(@Param('id') id: string): Promise<CollegeResponseDTO> {
+    async getCollegeById(@Param('id') id: string): Promise<CollegeResponseDto> {
         const college = await this.collegeService.getCollegeById(id);
-        return plainToInstance(CollegeResponseDTO, college, {
+        return plainToInstance(CollegeResponseDto, college, {
             excludeExtraneousValues: true,
         });
     }
@@ -76,12 +76,12 @@ export class CollegeController {
     @ApiStandardResponse({
         summary: 'Delete college by ID',
         description: 'Deletes a college identified by its ID',
-        type: CollegeResponseDTO,
+        type: CollegeResponseDto,
     })
     @UseGuards(JwtAccessAuthGuard)
-    async deleteCollegeById(@Param('id') id: string): Promise<CollegeResponseDTO> {
+    async deleteCollegeById(@Param('id') id: string): Promise<CollegeResponseDto> {
         const college = await this.collegeService.deleteCollegeById(id);
-        return plainToInstance(CollegeResponseDTO, college, {
+        return plainToInstance(CollegeResponseDto, college, {
             excludeExtraneousValues: true,
         });
     }

@@ -1,4 +1,4 @@
-import { CollegeResponseDTO } from "@/module/college/dtos";
+import { CollegeShortResponseDto } from "@/module/college/dtos";
 import { SubjectResponseDto } from "@/module/subject/dtos";
 import { ApiProperty } from "@nestjs/swagger";
 import { Exclude, Expose, Transform, Type } from "class-transformer";
@@ -14,10 +14,10 @@ export class CareerResponseDTO{
     @Expose()
     name: string;
 
-    @ApiProperty({ type: () => CollegeResponseDTO })
+    @ApiProperty({ type: () => CollegeShortResponseDto })
     @Expose()
-    @Type(() => CollegeResponseDTO)
-    collegeId: CollegeResponseDTO;
+    @Type(() => CollegeShortResponseDto)
+    collegeId: CollegeShortResponseDto;
 
     @ApiProperty({type: () => SubjectResponseDto})
     @Expose()

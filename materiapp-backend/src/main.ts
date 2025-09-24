@@ -7,7 +7,7 @@ import session from 'express-session';
 import { AppModule } from './app.module';
 import { GOOGLE_SECRET, NODE_ENV, PORT } from './core/config';
 import { getSwaggerConfig } from './core/config/swagger';
-import { CollegeResponseDTO } from './module/college/dtos';
+import { CollegeResponseDto } from './module/college/dtos';
 import { ACCEPT_VERSION_HEADER } from './module/common/constants';
 import { UserResponseDTO } from './module/user/dtos';
 import { CareerResponseDTO } from './module/career/dtos';
@@ -52,7 +52,7 @@ async function bootstrap() {
       UserResponseDTO,
       CareerResponseDTO,
       SubjectResponseDto,
-      CollegeResponseDTO,
+      CollegeResponseDto,
     ]
   });
   SwaggerModule.setup('/api/docs', app, document, swaggerSetupOptions);

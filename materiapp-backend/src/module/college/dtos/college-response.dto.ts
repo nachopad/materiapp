@@ -1,25 +1,17 @@
-import { CareerResponseDTO } from "@/module/career/dtos";
 import { UuidToString } from "@/module/common/decorators";
 import { ApiProperty } from "@nestjs/swagger";
-import { Exclude, Expose, Type } from "class-transformer";
+import { Exclude, Expose } from "class-transformer";
 
 @Exclude()
-export class CollegeResponseDTO {
+export class CollegeResponseDto {
     @ApiProperty()
     @Expose()
     @UuidToString()
     _id: string;
 
-
     @ApiProperty()
     @Expose()
     name: string;
-
-
-    @ApiProperty({ type: () => CareerResponseDTO })
-    @Expose()
-    @Type(() => CareerResponseDTO)
-    careers: CareerResponseDTO[];
 
     @ApiProperty()
     @Expose()
@@ -29,7 +21,7 @@ export class CollegeResponseDTO {
     @Expose()
     updatedAt: Date;
 
-    constructor(partial: Partial<CollegeResponseDTO>) {
+    constructor(partial: Partial<CollegeResponseDto>) {
         Object.assign(this, partial);
     }
 }

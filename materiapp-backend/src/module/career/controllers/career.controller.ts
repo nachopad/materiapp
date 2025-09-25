@@ -5,6 +5,7 @@ import { CareerResponseDto, CreateCareerDto, UpdateCareerDto } from "../dtos";
 import { plainToInstance } from "class-transformer";
 import { IdValidationPipe } from "../pipes/id-validation.pipe";
 import { CreateSubjectEmbeddedDto } from "../dtos/create-subject-embedded.dto";
+import { CollegeValidatePipe, SubjectValidatePipe } from "../pipes";
 
 @ApiVersionHeader('1')
 @Controller({ path: 'career', version: '1' })
@@ -48,7 +49,7 @@ export class CareerController {
         type: CareerResponseDto,
         status: 201,
     })
-    async create(@Body() createCareerDTO: CreateCareerDto): Promise<CareerResponseDto> {
+    async create(@Body(CollegeValidatePipe) createCareerDTO: CreateCareerDto): Promise<CareerResponseDto> {
         return await this.careerService.createCareer(createCareerDTO);
     }
 
@@ -58,7 +59,7 @@ export class CareerController {
         description: 'Update career by id',
         type: CareerResponseDto,
     })
-    async updateCareer(@Param('id') id: string, @Body() updateCareerDTO: UpdateCareerDto): Promise<CareerResponseDto> {
+    async updateCareer(@Param('id', new IdValidationPipe()) id: string, @Body(CollegeValidatePipe, SubjectValidatePipe) updateCareerDTO: UpdateCareerDto): Promise<CareerResponseDto> {
         const updateCareer = await this.careerService.updateCareer(id, updateCareerDTO);
         return plainToInstance(CareerResponseDto, updateCareer, {
             excludeExtraneousValues: true,

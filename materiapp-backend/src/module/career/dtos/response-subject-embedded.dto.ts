@@ -1,5 +1,6 @@
+import { SubjectResponseDto } from "@/module/subject/dtos";
 import { ApiProperty } from "@nestjs/swagger";
-import { Exclude, Expose, Transform } from "class-transformer";
+import { Exclude, Expose, Transform, Type } from "class-transformer";
 
 @Exclude()
 export class SubjectEmbeddedResponseDto {
@@ -16,8 +17,15 @@ export class SubjectEmbeddedResponseDto {
     @ApiProperty()
     quarter: number;
 
+    //Primera Version 
+    //@Expose()
+    // @ApiProperty()
+    // @Transform(({ obj }) => obj.subjectId?.toString())
+    // subjectId: string;
+
+    //Segunda version SOLO para el Populate
     @Expose()
-    @ApiProperty()
-    @Transform(({ obj }) => obj.subjectId?.toString())
-    subjectId: string;
+    @ApiProperty({ type: () => SubjectResponseDto })
+    @Type(() => SubjectResponseDto)
+    subjectId: SubjectResponseDto;
 }

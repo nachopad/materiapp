@@ -1,7 +1,6 @@
 import { BadRequestException, ConflictException, forwardRef, Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
-
 import { CollegeService } from "@/module/college/services";
 import { SubjectService } from "@/module/subject/services";
 import { plainToInstance } from "class-transformer";
@@ -23,7 +22,6 @@ export class CareerService {
      * @returns 
      */
     async createCareer(createCareerDTO: CreateCareerDto): Promise<CareerResponseDto> {
-        if (createCareerDTO.collegeId) await this.collegeService.getCollegeById(createCareerDTO.collegeId);
         const newCareer = await new this.careerModel(createCareerDTO);
         await newCareer.save();
         return plainToInstance(CareerResponseDto, newCareer, {
@@ -37,12 +35,12 @@ export class CareerService {
      * @returns 
      */
     async updateCareer(id: string, updateCareerDto: UpdateCareerDto): Promise<Career> {
-        if (updateCareerDto.collegeId) await this.collegeService.getCollegeById(updateCareerDto.collegeId);
         const updateCareer = await this.careerModel.findByIdAndUpdate({ _id: id }, { $set: updateCareerDto }, { new: true }).exec();
-        if (!updateCareer) throw new NotFoundException(`Canonot update career: No career found with id: ${id}`)
+        if (!updateCareer) throw new NotFoundException(`Canonot update career, Not found career with id: ${id}`)
         return updateCareer;
     }
 
+    
     /**
      * Permite agregar una materia a una carrera
      * TODO --> Determinar en donde colocar este codigo para seguir con el patron SOLID
@@ -66,11 +64,12 @@ export class CareerService {
     }
 
     async findCareerByID(id: string): Promise<Career> {
-        const careerFound = await this.careerModel.findById(id).lean();
+        const careerFound = await this.careerModel.findById(id).populate('subjects.subjectId').lean();
         if (!careerFound) throw new NotFoundException(`Career with id ${id} not found`)
         return careerFound;
     }
 
+    //Remember: .select permite omitir el campo que se indique dentro
     async getCareers(): Promise<Career[]> {
         return this.careerModel.find().select('-subjects').lean();
     }

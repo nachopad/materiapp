@@ -1,11 +1,11 @@
-import { BadRequestException, forwardRef, Inject, Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, ConflictException, forwardRef, Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 
 import { CollegeService } from "@/module/college/services";
 import { SubjectService } from "@/module/subject/services";
 import { plainToInstance } from "class-transformer";
-import { CareerResponseDTO, CreateCareerDto, UpdateCareerDto } from "../dtos";
+import { CareerResponseDto, CreateCareerDto, UpdateCareerDto, CreateSubjectEmbeddedDto } from "../dtos";
 import { Career } from "../schemas";
 
 @Injectable()
@@ -17,52 +17,62 @@ export class CareerService {
         private subjectService: SubjectService,
     ) { }
 
-    async createCareer(createCareerDTO: CreateCareerDto): Promise<CareerResponseDTO> {
+    /**
+     * Solo crea, no agrega Subjects embebidos
+     * @param createCareerDTO 
+     * @returns 
+     */
+    async createCareer(createCareerDTO: CreateCareerDto): Promise<CareerResponseDto> {
         if (createCareerDTO.collegeId) await this.collegeService.getCollegeById(createCareerDTO.collegeId);
-
-        createCareerDTO.subjectsId = await this.validateSubjectsExist(createCareerDTO.subjectsId);
-
         const newCareer = await new this.careerModel(createCareerDTO);
         await newCareer.save();
-        return plainToInstance(CareerResponseDTO, newCareer, {
+        return plainToInstance(CareerResponseDto, newCareer, {
             excludeExtraneousValues: true,
         })
     }
-
+    /**
+     * Solo actualiza, no actualiza Subjects embebidos
+     * @param id 
+     * @param updateCareerDto 
+     * @returns 
+     */
     async updateCareer(id: string, updateCareerDto: UpdateCareerDto): Promise<Career> {
         if (updateCareerDto.collegeId) await this.collegeService.getCollegeById(updateCareerDto.collegeId);
-        if (updateCareerDto.subjectsId) {
-            updateCareerDto.subjectsId = await this.validateSubjectsExist(updateCareerDto.subjectsId);
-        }
         const updateCareer = await this.careerModel.findByIdAndUpdate({ _id: id }, { $set: updateCareerDto }, { new: true }).exec();
         if (!updateCareer) throw new NotFoundException(`Canonot update career: No career found with id: ${id}`)
         return updateCareer;
     }
 
     /**
-     * This method validates the existence of the IDs in the database and removes duplicate values.
-     * @param listId 
-     * @returns list without duplicate values
+     * Permite agregar una materia a una carrera
+     * TODO --> Determinar en donde colocar este codigo para seguir con el patron SOLID
+     * @param id 
+     * @param subjectEmbedded 
+     * @returns 
      */
-    async validateSubjectsExist(listId: string[]): Promise<string[]> {
-        if (Array.isArray(listId) && listId.length > 0) {
-            listId = [...new Set(listId)];
-            for (const id of listId) {
-                await this.subjectService.findSubjectById(id);
-            }
-            return listId;
+    async addSubjectEmbedded(id: string, subjectEmbedded: CreateSubjectEmbeddedDto): Promise<Career | null> {
+        await this.subjectService.findSubjectById(subjectEmbedded.subjectId.toString());
+        const careerWithSubjects = await this.findCareerByID(id);
+        const alreadyExists = careerWithSubjects.subjects.some(
+            item => item.subjectId == subjectEmbedded.subjectId
+        );
+        if (alreadyExists) {
+            console.log("No entra");
+            
+            throw new ConflictException(`A subject with id: ${subjectEmbedded.subjectId} already exists`);
         }
-        return [];
+        careerWithSubjects.subjects.push(subjectEmbedded);
+        return await this.careerModel.findByIdAndUpdate(id, careerWithSubjects, { new: true} );
     }
 
     async findCareerByID(id: string): Promise<Career> {
-        const careerFound = await this.careerModel.findById(id).populate(['collegeId', 'subjectsId'], 'name').lean();
+        const careerFound = await this.careerModel.findById(id).lean();
         if (!careerFound) throw new NotFoundException(`Career with id ${id} not found`)
         return careerFound;
     }
 
     async getCareers(): Promise<Career[]> {
-        return this.careerModel.find().populate(['collegeId', 'subjectsId'], 'name').lean();
+        return this.careerModel.find().select('-subjects').lean();
     }
 
     async deleteCareerByID(id: string): Promise<Career | null> {

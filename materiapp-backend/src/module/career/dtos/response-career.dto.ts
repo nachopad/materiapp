@@ -1,10 +1,11 @@
 import { CollegeShortResponseDto } from "@/module/college/dtos";
-import { SubjectResponseDto } from "@/module/subject/dtos";
 import { ApiProperty } from "@nestjs/swagger";
 import { Exclude, Expose, Transform, Type } from "class-transformer";
+import { SubjectEmbeddedResponseDto } from "./response-subject-embedded.dto";
+
 
 @Exclude()
-export class CareerResponseDTO{
+export class CareerResponseDto{
     @ApiProperty()
     @Expose()
     @Transform(({ obj }) => obj._id?.toString())
@@ -19,12 +20,12 @@ export class CareerResponseDTO{
     @Type(() => CollegeShortResponseDto)
     collegeId: CollegeShortResponseDto;
 
-    @ApiProperty({type: () => SubjectResponseDto})
+    @ApiProperty({type: ()=> SubjectEmbeddedResponseDto})
     @Expose()
-    @Type(()=> SubjectResponseDto)
-    subjectsId: SubjectResponseDto[];
+    @Type(()=> SubjectEmbeddedResponseDto)
+    subjects: SubjectEmbeddedResponseDto[];
 
-    constructor(partial: Partial<CareerResponseDTO>){
+    constructor(partial: Partial<CareerResponseDto>){
         Object.assign(this, partial);
     }
 }

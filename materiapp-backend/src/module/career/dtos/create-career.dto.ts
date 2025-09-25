@@ -1,5 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsMongoId, IsString, Matches, MinLength } from "class-validator";
+import { IsArray, IsMongoId, IsString, Matches, MinLength, ValidateNested } from "class-validator";
+import { CreateSubjectEmbeddedDto } from "./create-subject-embedded.dto";
+import { Type } from "class-transformer";
 
 export class CreateCareerDto {
     @IsString()
@@ -12,7 +14,4 @@ export class CreateCareerDto {
     @ApiProperty({ description: 'College ID' })
     collegeId: string;
 
-    @IsMongoId({ each: true, message: 'The subject IDs must be valid MongoDB ObjectId' })
-    @ApiProperty({ description: 'Subjects ID' })
-    subjectsId: string[];
 }

@@ -1,9 +1,10 @@
 import { ApiStandardResponse, ApiVersionHeader } from "@/module/common/decorators";
-import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put } from "@nestjs/common";
 import { CareerService } from "../services";
-import { CareerResponseDTO, CreateCareerDto, UpdateCareerDto } from "../dtos";
+import { CareerResponseDto, CreateCareerDto, UpdateCareerDto } from "../dtos";
 import { plainToInstance } from "class-transformer";
 import { IdValidationPipe } from "../pipes/id-validation.pipe";
+import { CreateSubjectEmbeddedDto } from "../dtos/create-subject-embedded.dto";
 
 @ApiVersionHeader('1')
 @Controller({ path: 'career', version: '1' })
@@ -16,12 +17,12 @@ export class CareerController {
     @ApiStandardResponse({
         summary: 'Get all Careers',
         description: 'Retrieves a list of all careers in the system',
-        type: CareerResponseDTO,
+        type: CareerResponseDto,
         isArray: true,
     })
-    async getCareers(): Promise<CareerResponseDTO[]> {
+    async getCareers(): Promise<CareerResponseDto[]> {
         const careers = await this.careerService.getCareers();
-        return plainToInstance(CareerResponseDTO, careers, {
+        return plainToInstance(CareerResponseDto, careers, {
             excludeExtraneousValues: true,
         });
     }
@@ -31,11 +32,11 @@ export class CareerController {
     @ApiStandardResponse({
         summary: 'Get Career by Id',
         description: 'Retrieves a career by ID in the system',
-        type: CareerResponseDTO,
+        type: CareerResponseDto,
     })
-    async getCareerById(@Param('id', new IdValidationPipe()) id: string): Promise<CareerResponseDTO> {
+    async getCareerById(@Param('id', new IdValidationPipe()) id: string): Promise<CareerResponseDto> {
         const careerFound = await this.careerService.findCareerByID(id);
-        return plainToInstance(CareerResponseDTO, careerFound, {
+        return plainToInstance(CareerResponseDto, careerFound, {
             excludeExtraneousValues: true,
         });
     }
@@ -44,10 +45,10 @@ export class CareerController {
     @ApiStandardResponse({
         summary: 'Create a new career',
         description: 'Creates a new user in the system',
-        type: CareerResponseDTO,
+        type: CareerResponseDto,
         status: 201,
     })
-    async create(@Body() createCareerDTO: CreateCareerDto): Promise<CareerResponseDTO> {
+    async create(@Body() createCareerDTO: CreateCareerDto): Promise<CareerResponseDto> {
         return await this.careerService.createCareer(createCareerDTO);
     }
 
@@ -55,24 +56,38 @@ export class CareerController {
     @ApiStandardResponse({
         summary: 'Update career',
         description: 'Update career by id',
-        type: CareerResponseDTO,
+        type: CareerResponseDto,
     })
-    async updateCareer(@Param('id') id: string, @Body() updateCareerDTO: UpdateCareerDto): Promise<CareerResponseDTO> {
+    async updateCareer(@Param('id') id: string, @Body() updateCareerDTO: UpdateCareerDto): Promise<CareerResponseDto> {
         const updateCareer = await this.careerService.updateCareer(id, updateCareerDTO);
-        return plainToInstance(CareerResponseDTO, updateCareer, {
+        return plainToInstance(CareerResponseDto, updateCareer, {
             excludeExtraneousValues: true,
         })
     }
+
+    @Patch(':id')
+    @ApiStandardResponse({
+        summary: 'Add subject to career',
+        description: 'Allow add subject embedded into career',
+        type: CareerResponseDto
+    })
+    async addSubjectToCareer(@Param('id', new IdValidationPipe()) id: string, @Body() subjectEmbedded: CreateSubjectEmbeddedDto): Promise<CareerResponseDto>{
+        const careerWithSubjectsEmbedded = await this.careerService.addSubjectEmbedded(id, subjectEmbedded);
+        return plainToInstance(CareerResponseDto, careerWithSubjectsEmbedded, {
+            excludeExtraneousValues: true
+        })
+    }
+
 
     @Delete(':id')
     @ApiStandardResponse({
         summary: 'Delete career',
         description: 'Delete career by id',
-        type: CareerResponseDTO,
+        type: CareerResponseDto,
     })
-    async deleteCareer(@Param('id', new IdValidationPipe()) id: string): Promise<CareerResponseDTO> {
+    async deleteCareer(@Param('id', new IdValidationPipe()) id: string): Promise<CareerResponseDto> {
         const careerDelete = await this.careerService.deleteCareerByID(id);
-        return plainToInstance(CareerResponseDTO, careerDelete, {
+        return plainToInstance(CareerResponseDto, careerDelete, {
             excludeExtraneousValues: true,
         })
     }

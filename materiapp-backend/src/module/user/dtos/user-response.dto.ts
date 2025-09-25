@@ -29,6 +29,10 @@ export class UserResponseDTO {
   @Expose()
   updatedAt: Date;
 
+  @ApiProperty({ type: [String] })
+  @Expose()
+  roles: string[];
+
   @ApiProperty()
   @Expose()
   get isGoogleUser(): boolean {

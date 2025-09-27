@@ -1,6 +1,7 @@
-import { JwtAccessAuthGuard } from "@/module/auth/guards";
+import { Auth } from "@/module/auth/decorators";
+import { ROLE_ADMIN } from "@/module/common/constants";
 import { ApiStandardResponse, ApiVersionHeader } from "@/module/common/decorators";
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
 import { CollegeResponseDto, CreateCollegeDto, UpdateCollegeDto } from "../dtos";
 import { CollegeService } from "../services";
@@ -18,7 +19,7 @@ export class CollegeController {
         type: CollegeResponseDto,
         status: 201,
     })
-    @UseGuards(JwtAccessAuthGuard)
+    @Auth(ROLE_ADMIN)
     async create(
         @Body() createCollegeDto: CreateCollegeDto
     ): Promise<CollegeResponseDto> {
@@ -34,7 +35,7 @@ export class CollegeController {
         description: 'Updates the information of an existing college identified by ID',
         type: CollegeResponseDto,
     })
-    @UseGuards(JwtAccessAuthGuard)
+    @Auth(ROLE_ADMIN)
     async update(
         @Param('id') id: string,
         @Body() updateCollegeDto: UpdateCollegeDto
@@ -78,7 +79,7 @@ export class CollegeController {
         description: 'Deletes a college identified by its ID',
         type: CollegeResponseDto,
     })
-    @UseGuards(JwtAccessAuthGuard)
+    @Auth(ROLE_ADMIN)
     async deleteCollegeById(@Param('id') id: string): Promise<CollegeResponseDto> {
         const college = await this.collegeService.deleteCollegeById(id);
         return plainToInstance(CollegeResponseDto, college, {

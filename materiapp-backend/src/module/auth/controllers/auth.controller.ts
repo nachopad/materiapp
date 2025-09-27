@@ -172,7 +172,6 @@ export class AuthController {
     type: UserResponseDTO,
   })
   @UseGuards(JwtAccessAuthGuard)
-  // @ApiResponse({ status: 200, type: UserResponseDTO })
   async getAuthUser(
     @Cookies(ACCESS_TOKEN_COOKIE) accessToken: string,
   ): Promise<UserResponseDTO> {

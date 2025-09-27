@@ -27,7 +27,7 @@ export class AuthService {
 
   async login(loginDto: User) {
     const user: any = await this.userService.findUserByEmail(loginDto.email);
-    const payload = { email: user.email, sub: user._id.toString() };
+    const payload = { email: user.email, sub: user._id.toString(), roles: user.roles };
     return this.generateTokens(payload);
   }
 

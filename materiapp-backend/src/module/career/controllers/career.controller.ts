@@ -12,7 +12,7 @@ import { CareerService } from "../services";
 export class CareerController {
 
     constructor(private readonly careerService: CareerService) {
-    } F
+    }
 
     @Get()
     @ApiStandardResponse({

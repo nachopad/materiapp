@@ -10,7 +10,7 @@ import { getSwaggerConfig } from './core/config/swagger';
 import { CollegeResponseDto } from './module/college/dtos';
 import { ACCEPT_VERSION_HEADER } from './module/common/constants';
 import { UserResponseDTO } from './module/user/dtos';
-import { CareerResponseDTO } from './module/career/dtos';
+import { CareerResponseDto } from './module/career/dtos';
 import { SubjectResponseDto } from './module/subject/dtos';
 
 async function bootstrap() {
@@ -50,7 +50,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, swaggerConfig, {
     extraModels: [
       UserResponseDTO,
-      CareerResponseDTO,
+      CareerResponseDto,
       SubjectResponseDto,
       CollegeResponseDto,
     ]

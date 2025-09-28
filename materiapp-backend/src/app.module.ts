@@ -7,14 +7,15 @@ import {
   DATABASE_PORT,
 } from './core/config/environment';
 import { AuthModule } from './module/auth/auth.module';
+import { CareerModule } from './module/career/career.module';
 import { CollegeModule } from './module/college/college.module';
 import {
   HttpExceptionFilter,
   TransformResponseInterceptor,
 } from './module/common/interceptors';
-import { UserModule } from './module/user/user.module';
-import { CareerModule } from './module/career/career.module';
+import { EnrollmentModule } from './module/enrollment/enrollment.module';
 import { SubjectModule } from './module/subject/subject.module';
+import { UserModule } from './module/user/user.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { SubjectModule } from './module/subject/subject.module';
     CareerModule,
     SubjectModule,
     CollegeModule,
+    EnrollmentModule
   ],
   controllers: [],
   providers: [
@@ -39,4 +41,4 @@ import { SubjectModule } from './module/subject/subject.module';
     },
   ],
 })
-export class AppModule {}
+export class AppModule { }

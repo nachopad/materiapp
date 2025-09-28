@@ -12,6 +12,7 @@ import { ACCEPT_VERSION_HEADER } from './module/common/constants';
 import { UserResponseDTO } from './module/user/dtos';
 import { CareerResponseDto } from './module/career/dtos';
 import { SubjectResponseDto } from './module/subject/dtos';
+import { EnrollmentResponseDto } from './module/enrollment/dtos';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -53,6 +54,7 @@ async function bootstrap() {
       CareerResponseDto,
       SubjectResponseDto,
       CollegeResponseDto,
+      EnrollmentResponseDto
     ]
   });
   SwaggerModule.setup('/api/docs', app, document, swaggerSetupOptions);

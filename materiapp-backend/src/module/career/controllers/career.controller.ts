@@ -1,11 +1,11 @@
 import { ApiStandardResponse, ApiVersionHeader } from "@/module/common/decorators";
+import { IdValidationPipe } from "@/module/common/pipes";
 import { Body, Controller, Delete, Get, Param, Patch, Post, Put } from "@nestjs/common";
-import { CareerService } from "../services";
-import { CareerResponseDto, CreateCareerDto, UpdateCareerDto } from "../dtos";
 import { plainToInstance } from "class-transformer";
-import { IdValidationPipe } from "../pipes/id-validation.pipe";
+import { CareerResponseDto, CreateCareerDto, UpdateCareerDto } from "../dtos";
 import { CreateSubjectEmbeddedDto } from "../dtos/create-subject-embedded.dto";
 import { CollegeValidatePipe, SubjectValidatePipe } from "../pipes";
+import { CareerService } from "../services";
 
 @ApiVersionHeader('1')
 @Controller({ path: 'career', version: '1' })
@@ -72,7 +72,7 @@ export class CareerController {
         description: 'Allow add subject embedded into career',
         type: CareerResponseDto
     })
-    async addSubjectToCareer(@Param('id', new IdValidationPipe()) id: string, @Body() subjectEmbedded: CreateSubjectEmbeddedDto): Promise<CareerResponseDto>{
+    async addSubjectToCareer(@Param('id', new IdValidationPipe()) id: string, @Body() subjectEmbedded: CreateSubjectEmbeddedDto): Promise<CareerResponseDto> {
         const careerWithSubjectsEmbedded = await this.careerService.addSubjectEmbedded(id, subjectEmbedded);
         return plainToInstance(CareerResponseDto, careerWithSubjectsEmbedded, {
             excludeExtraneousValues: true

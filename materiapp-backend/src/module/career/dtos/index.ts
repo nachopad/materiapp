@@ -1,3 +1,4 @@
+export * from './career-short-response.dto';
 export * from './create-career.dto';
 export * from './create-subject-embedded.dto';
 export * from './response-career.dto';

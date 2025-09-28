@@ -1,4 +1,8 @@
 import {
+  ApiStandardResponse,
+  ApiVersionHeader,
+} from '@/module/common/decorators';
+import {
   Body,
   Controller,
   Delete,
@@ -7,24 +11,20 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import {
-  ApiStandardResponse,
-  ApiVersionHeader,
-} from '@/module/common/decorators';
 
-import { SubjectService } from '../services';
+import { IdValidationPipe } from '@/module/common/pipes';
+import { plainToInstance } from 'class-transformer';
 import {
   CreateSubjectDto,
   SubjectResponseDto,
   UpdateSubjectDto,
 } from '../dtos';
-import { plainToInstance } from 'class-transformer';
-import { IdValidationPipe } from '../pipes';
+import { SubjectService } from '../services';
 
 @ApiVersionHeader('1')
 @Controller({ path: 'subject', version: '1' })
 export class SubjectController {
-  constructor(private readonly subjectService: SubjectService) {}
+  constructor(private readonly subjectService: SubjectService) { }
 
   @Get()
   @ApiStandardResponse({

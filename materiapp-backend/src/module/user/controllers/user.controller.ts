@@ -12,7 +12,7 @@ import {
 import { plainToInstance } from 'class-transformer';
 import { CreateUserDto, UpdateUserDto, UserResponseDTO } from '../dtos';
 import { ChangePasswordDto } from '../dtos/change-password.dto';
-import { EmailValidationPipe } from '../pipes';
+import { EmailValidationPipe } from '@/module/common/pipes';
 import { UserService } from '../services';
 import { Auth } from '@/module/auth/decorators';
 import { ROLE_ADMIN } from '@/module/common/constants';

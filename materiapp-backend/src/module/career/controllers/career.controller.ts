@@ -1,16 +1,16 @@
 import { ApiStandardResponse, ApiVersionHeader } from "@/module/common/decorators";
+import { IdValidationPipe } from "@/module/common/pipes";
 import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
-import { CareerService } from "../services";
-import { CareerResponseDTO, CreateCareerDto, UpdateCareerDto } from "../dtos";
 import { plainToInstance } from "class-transformer";
-import { IdValidationPipe } from "../pipes/id-validation.pipe";
+import { CareerResponseDTO, CreateCareerDto, UpdateCareerDto } from "../dtos";
+import { CareerService } from "../services";
 
 @ApiVersionHeader('1')
 @Controller({ path: 'career', version: '1' })
 export class CareerController {
 
     constructor(private readonly careerService: CareerService) {
-    }
+    }F
 
     @Get()
     @ApiStandardResponse({

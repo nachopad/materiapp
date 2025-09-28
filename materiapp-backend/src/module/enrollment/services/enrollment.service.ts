@@ -12,7 +12,6 @@ export class EnrollmentService {
     ) { }
 
     async findAllByUser(userId: string): Promise<Enrollment[]> {
-        console.log(userId);
         return this.enrollmentModel.find({ user: new Types.ObjectId(userId) }).lean();
     }
 

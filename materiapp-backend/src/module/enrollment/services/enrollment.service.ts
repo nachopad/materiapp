@@ -23,7 +23,6 @@ export class EnrollmentService {
             ...createEnrollmentDto,
             user: new this.enrollmentModel.db.base.Types.ObjectId(userId),
         });
-        console.log(newEnrollment);
         return newEnrollment;
     }
 

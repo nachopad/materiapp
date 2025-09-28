@@ -1,16 +1,16 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { ArrayMinSize, IsMongoId, ValidateNested } from "class-validator";
-import { SubjectEnrollmentDto } from "./subject-enrollment.dto";
+import { SubjectEnrollmentDto } from "./create-subject-enrollment.dto";
 
 export class CreateEnrollmentDto {
     @IsMongoId({ message: 'The career ID must be a valid MongoDB ObjectId' })
     @ApiProperty({ description: 'Career ID' })
-    careerId: string;
+    career: string;
 
     @IsMongoId({ message: 'The college ID must be a valid MongoDB ObjectId' })
     @ApiProperty({ description: 'College ID' })
-    collegeId: string;
+    college: string;
 
     @ValidateNested({ each: true })
     @Type(() => SubjectEnrollmentDto)

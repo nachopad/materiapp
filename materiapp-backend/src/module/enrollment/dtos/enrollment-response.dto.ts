@@ -4,6 +4,7 @@ import { UuidToString } from "@/module/common/decorators";
 import { UserShortResponseDto } from "@/module/user/dtos";
 import { ApiProperty } from "@nestjs/swagger";
 import { Exclude, Expose, Type } from "class-transformer";
+import { SubjectEnrollmentResponseDto } from "./subject-enrollment-response.dto";
 
 @Exclude()
 export class EnrollmentResponseDto {
@@ -27,6 +28,11 @@ export class EnrollmentResponseDto {
     @Expose()
     @Type(() => CareerShortResponseDto)
     career: CareerShortResponseDto;
+
+    @ApiProperty({ type: [SubjectEnrollmentResponseDto] })
+    @Expose()
+    @Type(() => SubjectEnrollmentResponseDto)
+    subjects: SubjectEnrollmentResponseDto[];
 
     @ApiProperty()
     @Expose()

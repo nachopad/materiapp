@@ -1,4 +1,5 @@
-import { Auth } from "@/module/auth/decorators";
+import { Auth, User } from "@/module/auth/decorators";
+import type { AuthUser } from "@/module/auth/interfaces";
 import { ApiStandardResponse, ApiVersionHeader } from "@/module/common/decorators";
 import { Body, Controller, Get, Post } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
@@ -19,8 +20,10 @@ export class EnrollmentController {
         isArray: true,
     })
     @Auth()
-    async findAll(): Promise<EnrollmentResponseDto[]> {
-        const enrollments = await this.enrollmentService.findAllByUser('userId');
+    async findAll(
+        @User() user: AuthUser
+    ): Promise<EnrollmentResponseDto[]> {
+        const enrollments = await this.enrollmentService.findAllByUser(user._id);
         return plainToInstance(EnrollmentResponseDto, enrollments, {
             excludeExtraneousValues: true,
         })
@@ -28,18 +31,20 @@ export class EnrollmentController {
 
     @Post()
     @ApiStandardResponse({
-        summary: 'Create a new Enrollment',
+        summary: 'Create a new Enrollment for logged user',
         description: 'Creates a new enrollment for the logged user in the system',
         type: EnrollmentResponseDto,
         status: 201
     })
     @Auth()
-    async create(@Body() createEnrollmentDto: CreateEnrollmentDto) {
-        return "Not implemented yet";
-        // const enrollment = await this.enrollmentService.create(createEnrollmentDto);
-        // return plainToInstance(EnrollmentResponseDto, enrollment, {
-        //     excludeExtraneousValues: true,
-        // });
+    async create(
+        @User() user: AuthUser,
+        @Body() createEnrollmentDto: CreateEnrollmentDto
+    ) {
+        const enrollment = await this.enrollmentService.create(user._id, createEnrollmentDto);
+        return plainToInstance(EnrollmentResponseDto, enrollment, {
+            excludeExtraneousValues: true,
+        });
     }
 
 }

@@ -5,7 +5,7 @@ import { EnrollmentState } from "../enums";
 export class SubjectEnrollmentDto {
     @IsMongoId({ message: 'The subject ID must be a valid MongoDB ObjectId' })
     @ApiProperty({ description: 'Subject ID' })
-    subjectId: string;
+    subject: string;
 
     @IsOptional()
     @IsNumber()

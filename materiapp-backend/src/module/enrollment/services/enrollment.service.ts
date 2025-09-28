@@ -12,7 +12,7 @@ export class EnrollmentService {
     ) { }
 
     async findAllByUser(userId: string): Promise<Enrollment[]> {
-        return this.enrollmentModel.find({ user: new Types.ObjectId(userId) }).lean();
+        return this.enrollmentModel.find({ user: new Types.ObjectId(userId) }).populate('college').populate('career').populate('subjects.subject').lean();
     }
 
     async create(

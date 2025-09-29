@@ -2,6 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { ArrayMinSize, IsMongoId, ValidateNested } from "class-validator";
 import { SubjectEnrollmentDto } from "./create-subject-enrollment.dto";
+import { IsUniqueSubjectArray } from "../decorators";
 
 export class CreateEnrollmentDto {
     @IsMongoId({ message: 'The career ID must be a valid MongoDB ObjectId' })
@@ -15,6 +16,7 @@ export class CreateEnrollmentDto {
     @ValidateNested({ each: true })
     @Type(() => SubjectEnrollmentDto)
     @ArrayMinSize(1)
+    @IsUniqueSubjectArray('subject', { message: 'The subjects array must not contain duplicate subject IDs' })
     @ApiProperty({ type: [SubjectEnrollmentDto], description: 'Subjects' })
     subjects: SubjectEnrollmentDto[];
 }

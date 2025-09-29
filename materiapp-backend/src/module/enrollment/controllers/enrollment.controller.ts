@@ -5,6 +5,7 @@ import { Body, Controller, Get, Post } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
 import { CreateEnrollmentDto, EnrollmentResponseDto } from "../dtos";
 import { EnrollmentService } from "../services";
+import { EnrollmentValidationPipe } from "../pipes";
 
 @ApiVersionHeader('1')
 @Controller({ path: 'enrollment', version: '1' })
@@ -39,7 +40,7 @@ export class EnrollmentController {
     @Auth()
     async create(
         @User() user: AuthUser,
-        @Body() createEnrollmentDto: CreateEnrollmentDto
+        @Body(EnrollmentValidationPipe) createEnrollmentDto: CreateEnrollmentDto
     ) {
         const enrollment = await this.enrollmentService.create(user._id, createEnrollmentDto);
         return plainToInstance(EnrollmentResponseDto, enrollment, {

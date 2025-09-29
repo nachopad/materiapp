@@ -14,7 +14,7 @@ import { plainToInstance } from 'class-transformer';
 export class SubjectService {
   constructor(
     @InjectModel(Subject.name) private subjectModel: Model<Subject>,
-  ) {}
+  ) { }
 
   async getSubjects(): Promise<Subject[]> {
     return this.subjectModel.find().lean();
@@ -55,5 +55,9 @@ export class SubjectService {
 
   async deleteSubject(id: string): Promise<Subject | null> {
     return this.subjectModel.findByIdAndDelete(id).exec();
+  }
+
+  async findSubjectsByIds(ids: string[]): Promise<Subject[]> {
+    return this.subjectModel.find({ _id: { $in: ids } }).lean();
   }
 }

@@ -3,6 +3,7 @@ import { NestFactory } from '@nestjs/core';
 import { SwaggerModule } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
+import { doubleCsrfUtilities } from '@/shared/utils/csrf.util';
 
 import { AppModule } from './app.module';
 import { GOOGLE_SECRET, NODE_ENV, PORT } from './core/config';
@@ -46,6 +47,8 @@ async function bootstrap() {
     }),
   );
 
+  app.use(doubleCsrfUtilities.doubleCsrfProtection);
+
   // SWAGGER
   const { swaggerConfig, swaggerSetupOptions } = getSwaggerConfig();
   const document = SwaggerModule.createDocument(app, swaggerConfig, {
@@ -54,8 +57,8 @@ async function bootstrap() {
       CareerResponseDto,
       SubjectResponseDto,
       CollegeResponseDto,
-      EnrollmentResponseDto
-    ]
+      EnrollmentResponseDto,
+    ],
   });
   SwaggerModule.setup('/api/docs', app, document, swaggerSetupOptions);
 

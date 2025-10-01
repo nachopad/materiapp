@@ -16,6 +16,7 @@ import {
 import { EnrollmentModule } from './module/enrollment/enrollment.module';
 import { SubjectModule } from './module/subject/subject.module';
 import { UserModule } from './module/user/user.module';
+import { SecurityModule } from './module/security/security.module';
 
 @Module({
   imports: [
@@ -23,11 +24,12 @@ import { UserModule } from './module/user/user.module';
       `mongodb://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}`,
     ),
     AuthModule,
+    SecurityModule,
     UserModule,
     CareerModule,
     SubjectModule,
     CollegeModule,
-    EnrollmentModule
+    EnrollmentModule,
   ],
   controllers: [],
   providers: [
@@ -41,4 +43,4 @@ import { UserModule } from './module/user/user.module';
     },
   ],
 })
-export class AppModule { }
+export class AppModule {}

@@ -1,4 +1,7 @@
-import { ApiStandardResponse, ApiVersionHeader } from '@/module/common/decorators';
+import {
+  ApiStandardResponse,
+  ApiVersionHeader,
+} from '@/module/common/decorators';
 import {
   Body,
   Controller,
@@ -16,11 +19,13 @@ import { EmailValidationPipe } from '@/module/common/pipes';
 import { UserService } from '../services';
 import { Auth } from '@/module/auth/decorators';
 import { ROLE_ADMIN } from '@/module/common/constants';
+import { ApiSecurity } from '@nestjs/swagger';
 
 @ApiVersionHeader('1')
+@ApiSecurity('csrf-token')
 @Controller({ path: 'user', version: '1' })
 export class UserController {
-  constructor(private readonly userService: UserService) { }
+  constructor(private readonly userService: UserService) {}
 
   @Post()
   @ApiStandardResponse({
@@ -37,7 +42,8 @@ export class UserController {
   @Put(':email')
   @ApiStandardResponse({
     summary: 'Update user profile',
-    description: 'Updates the profile information of a user identified by email',
+    description:
+      'Updates the profile information of a user identified by email',
     type: UserResponseDTO,
   })
   @Auth()

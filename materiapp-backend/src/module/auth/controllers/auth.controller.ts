@@ -11,7 +11,12 @@ import {
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiOperation,
+  ApiResponse,
+  ApiSecurity,
+} from '@nestjs/swagger';
 import type { Response } from 'express';
 
 import { UserService } from '@/module/user/services';
@@ -27,7 +32,11 @@ import {
   ACCESS_TOKEN_COOKIE,
   REFRESH_TOKEN_COOKIE,
 } from '@/module/common/constants';
-import { ApiStandardResponse, ApiVersionHeader, Cookies } from '@/module/common/decorators';
+import {
+  ApiStandardResponse,
+  ApiVersionHeader,
+  Cookies,
+} from '@/module/common/decorators';
 import { EmailValidationPipe } from '@/module/common/pipes';
 import { CreateUserDto, UserResponseDTO } from '@/module/user/dtos';
 import { setCookie } from '@/shared/utils';
@@ -35,12 +44,13 @@ import { plainToInstance } from 'class-transformer';
 import { LoginDto } from '../dtos/login.dto';
 
 @ApiVersionHeader('1')
+@ApiSecurity('csrf-token')
 @Controller({ path: 'auth', version: ['1'] })
 export class AuthController {
   constructor(
     private userService: UserService,
     private authService: AuthService,
-  ) { }
+  ) {}
 
   @Post('register')
   @ApiStandardResponse({
@@ -74,8 +84,14 @@ export class AuthController {
     status: 200,
     type: UserResponseDTO,
   })
-  async validateAccount(@Param('email', new EmailValidationPipe()) email: string, @Query('token') tokenForValidate: string): Promise<UserResponseDTO> {
-    const accountValidated = await this.userService.activeAccount(email, tokenForValidate);
+  async validateAccount(
+    @Param('email', new EmailValidationPipe()) email: string,
+    @Query('token') tokenForValidate: string,
+  ): Promise<UserResponseDTO> {
+    const accountValidated = await this.userService.activeAccount(
+      email,
+      tokenForValidate,
+    );
     return plainToInstance(UserResponseDTO, accountValidated, {
       excludeExtraneousValues: true,
     });
@@ -114,7 +130,7 @@ export class AuthController {
     description: 'Allows a user to log out of the application',
     status: 201,
   })
-  async logout(
+  logout(
     @Cookies(ACCESS_TOKEN_COOKIE) accessToken: string,
     @Cookies(REFRESH_TOKEN_COOKIE) refreshToken: string,
     @Res({ passthrough: true }) response: Response,
@@ -135,7 +151,7 @@ export class AuthController {
   })
   @ApiResponse({ status: 302, description: 'Redirect to Google OAuth2' })
   @UseGuards(GoogleOAuthGuard)
-  async googleAuth(@Req() request) { }
+  async googleAuth(@Req() request) {}
 
   @Get('google-redirect')
   @ApiStandardResponse({
@@ -143,7 +159,7 @@ export class AuthController {
     description: 'Handles Google redirection after authentication',
   })
   @UseGuards(GoogleOAuthGuard)
-  async googleAuthRedirect(
+  googleAuthRedirect(
     @Req() request,
     @Res({ passthrough: true }) response: Response,
   ) {
@@ -193,26 +209,22 @@ export class AuthController {
     description: 'Allows a user to refresh their access token',
     status: 201,
   })
-  async refreshToken(
+  refreshToken(
     @Res({ passthrough: true }) response: Response,
     @Cookies(REFRESH_TOKEN_COOKIE) refreshToken: string,
   ) {
-    try {
-      const { access_token, refresh_token } =
-        this.authService.refreshToken(refreshToken);
+    const { access_token, refresh_token } =
+      this.authService.refreshToken(refreshToken);
 
-      setCookie(response, ACCESS_TOKEN_COOKIE, access_token, {
-        maxAge: JWT_ACCESS_EXPIRES_IN,
-      });
-      setCookie(response, REFRESH_TOKEN_COOKIE, refresh_token, {
-        maxAge: JWT_REFRESH_EXPIRES_IN,
-      });
+    setCookie(response, ACCESS_TOKEN_COOKIE, access_token, {
+      maxAge: JWT_ACCESS_EXPIRES_IN,
+    });
+    setCookie(response, REFRESH_TOKEN_COOKIE, refresh_token, {
+      maxAge: JWT_REFRESH_EXPIRES_IN,
+    });
 
-      return {
-        message: 'Access and refresh tokens have been refreshed successfully.',
-      };
-    } catch (error) {
-      throw error;
-    }
+    return {
+      message: 'Access and refresh tokens have been refreshed successfully.',
+    };
   }
 }

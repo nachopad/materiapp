@@ -3,7 +3,7 @@ import { NestFactory } from '@nestjs/core';
 import { SwaggerModule } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
-import { doubleCsrfUtilities } from '@/shared/utils/csrf.util';
+import { doubleCsrfProtection } from '@/core/middleware/csrf.middleware';
 
 import { AppModule } from './app.module';
 import { GOOGLE_SECRET, NODE_ENV, PORT } from './core/config';
@@ -47,7 +47,7 @@ async function bootstrap() {
     }),
   );
 
-  app.use(doubleCsrfUtilities.doubleCsrfProtection);
+  app.use(doubleCsrfProtection);
 
   // SWAGGER
   const { swaggerConfig, swaggerSetupOptions } = getSwaggerConfig();

@@ -13,7 +13,7 @@ export const getSwaggerConfig = () => {
         type: 'apiKey',
         in: 'header',
       },
-      'x-csrf-token',
+      'csrf-token',
     )
     .build();
 

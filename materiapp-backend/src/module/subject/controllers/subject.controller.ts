@@ -20,11 +20,13 @@ import {
   UpdateSubjectDto,
 } from '../dtos';
 import { SubjectService } from '../services';
+import { ApiSecurity } from '@nestjs/swagger';
 
 @ApiVersionHeader('1')
+@ApiSecurity('csrf-token')
 @Controller({ path: 'subject', version: '1' })
 export class SubjectController {
-  constructor(private readonly subjectService: SubjectService) { }
+  constructor(private readonly subjectService: SubjectService) {}
 
   @Get()
   @ApiStandardResponse({

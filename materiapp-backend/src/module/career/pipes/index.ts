@@ -1,1 +1,2 @@
-export * from './id-validation.pipe';
+export * from './college-validate.pipe';
+export * from './subjects-validate.pipe';

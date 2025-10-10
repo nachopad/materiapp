@@ -27,7 +27,7 @@ export class AuthService {
 
   async login(loginDto: User) {
     const user: any = await this.userService.findUserByEmail(loginDto.email);
-    const payload = { email: user.email, sub: user._id.toString() };
+    const payload = { email: user.email, sub: user._id.toString(), roles: user.roles };
     return this.generateTokens(payload);
   }
 
@@ -50,7 +50,7 @@ export class AuthService {
         secret: JWT_REFRESH_SECRET,
       });
 
-      return this.generateTokens({ email: payload.email, sub: payload.sub });
+      return this.generateTokens({ email: payload.email, sub: payload.sub, roles: payload.roles });
     } catch (error) {
       throw new UnauthorizedException(
         'Failed to refresh token. The refresh token may be invalid or expired.',
@@ -70,6 +70,7 @@ export class AuthService {
     const tokens = this.generateTokens({
       email: user.email,
       sub: user._id,
+      roles: user.roles,
     });
     return tokens;
   }

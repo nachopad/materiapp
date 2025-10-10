@@ -1,4 +1,7 @@
-import { ApiStandardResponse, ApiVersionHeader } from '@/module/common/decorators';
+import {
+  ApiStandardResponse,
+  ApiVersionHeader,
+} from '@/module/common/decorators';
 import {
   Body,
   Controller,
@@ -12,13 +15,17 @@ import {
 import { plainToInstance } from 'class-transformer';
 import { CreateUserDto, UpdateUserDto, UserResponseDTO } from '../dtos';
 import { ChangePasswordDto } from '../dtos/change-password.dto';
-import { EmailValidationPipe } from '../pipes';
+import { EmailValidationPipe } from '@/module/common/pipes';
 import { UserService } from '../services';
+import { Auth } from '@/module/auth/decorators';
+import { ROLE_ADMIN } from '@/module/common/constants';
+import { ApiSecurity } from '@nestjs/swagger';
 
 @ApiVersionHeader('1')
+@ApiSecurity('csrf-token')
 @Controller({ path: 'user', version: '1' })
 export class UserController {
-  constructor(private readonly userService: UserService) { }
+  constructor(private readonly userService: UserService) {}
 
   @Post()
   @ApiStandardResponse({
@@ -27,6 +34,7 @@ export class UserController {
     type: UserResponseDTO,
     status: 201,
   })
+  @Auth(ROLE_ADMIN)
   async create(@Body() createUserDto: CreateUserDto): Promise<UserResponseDTO> {
     return this.userService.create(createUserDto);
   }
@@ -34,9 +42,11 @@ export class UserController {
   @Put(':email')
   @ApiStandardResponse({
     summary: 'Update user profile',
-    description: 'Updates the profile information of a user identified by email',
+    description:
+      'Updates the profile information of a user identified by email',
     type: UserResponseDTO,
   })
+  @Auth()
   async updateProfile(
     @Param('email') email: string,
     @Body() updateUserDto: UpdateUserDto,
@@ -56,6 +66,7 @@ export class UserController {
     description: 'Changes the password of a user identified by email',
     type: UserResponseDTO,
   })
+  @Auth()
   async changePassword(
     @Param('email') email: string,
     @Body() changePasswordDto: ChangePasswordDto,
@@ -76,6 +87,7 @@ export class UserController {
     type: UserResponseDTO,
     isArray: true,
   })
+  @Auth(ROLE_ADMIN)
   async getUsers(): Promise<UserResponseDTO[]> {
     const users = await this.userService.getUsers();
     return plainToInstance(UserResponseDTO, users, {
@@ -89,6 +101,7 @@ export class UserController {
     description: 'Retrieves a user identified by email from the system',
     type: UserResponseDTO,
   })
+  @Auth()
   async findUserByEmail(
     @Param('email', new EmailValidationPipe()) email: string,
   ): Promise<UserResponseDTO> {
@@ -108,6 +121,7 @@ export class UserController {
     description: 'Deletes a user identified by email from the system',
     type: UserResponseDTO,
   })
+  @Auth()
   async deleteUserByEmail(
     @Param('email', new EmailValidationPipe()) email: string,
   ): Promise<UserResponseDTO> {

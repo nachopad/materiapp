@@ -3,15 +3,17 @@ import { NestFactory } from '@nestjs/core';
 import { SwaggerModule } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
+import { doubleCsrfProtection } from '@/core/middleware/csrf.middleware';
 
 import { AppModule } from './app.module';
 import { GOOGLE_SECRET, NODE_ENV, PORT } from './core/config';
 import { getSwaggerConfig } from './core/config/swagger';
-import { CollegeResponseDTO } from './module/college/dtos';
+import { CollegeResponseDto } from './module/college/dtos';
 import { ACCEPT_VERSION_HEADER } from './module/common/constants';
 import { UserResponseDTO } from './module/user/dtos';
-import { CareerResponseDTO } from './module/career/dtos';
+import { CareerResponseDto } from './module/career/dtos';
 import { SubjectResponseDto } from './module/subject/dtos';
+import { EnrollmentResponseDto } from './module/enrollment/dtos';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -45,15 +47,18 @@ async function bootstrap() {
     }),
   );
 
+  app.use(doubleCsrfProtection);
+
   // SWAGGER
   const { swaggerConfig, swaggerSetupOptions } = getSwaggerConfig();
   const document = SwaggerModule.createDocument(app, swaggerConfig, {
     extraModels: [
       UserResponseDTO,
-      CareerResponseDTO,
+      CareerResponseDto,
       SubjectResponseDto,
-      CollegeResponseDTO,
-    ]
+      CollegeResponseDto,
+      EnrollmentResponseDto,
+    ],
   });
   SwaggerModule.setup('/api/docs', app, document, swaggerSetupOptions);
 

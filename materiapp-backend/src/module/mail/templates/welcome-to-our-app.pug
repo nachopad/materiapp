@@ -1,0 +1,43 @@
+doctype html
+html(lang="es")
+  head
+    meta(charset="UTF-8")
+    title Bienvenido a MateriaApp
+    style.
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        padding: 20px;
+      }
+      .container {
+        background-color: #ffffff;
+        padding: 30px;
+        border-radius: 8px;
+        max-width: 600px;
+        margin: auto;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      }
+      .button {
+        display: inline-block;
+        padding: 12px 24px;
+        background-color: #28a745;
+        color: #ffffff;
+        text-decoration: none;
+        border-radius: 5px;
+        margin-top: 20px;
+      }
+      .footer {
+        margin-top: 30px;
+        font-size: 12px;
+        color: #888;
+        text-align: center;
+      }
+  body
+    .container
+      h2 ¡Hola #{username}!
+      p Te damos la bienvenida a <strong>MateriaApp</strong>. Estamos muy contentos de tenerte con nosotros.
+      p A partir de ahora podrás explorar nuestras funcionalidades, gestionar tus materias y avanzar en tu camino académico.
+      p Si tenés alguna duda, no dudes en contactarnos.
+      a.button(href="https://materiapp.com") Ir a MateriaApp
+      .footer
+        p © 2025 MateriaApp. Todos los derechos reservados.

@@ -16,6 +16,12 @@ export class User {
 
     @Prop({ type: String })
     googleId: string;
+
+    @Prop({ type: [String], default: ['user'] })
+    roles: string[];
+
+    @Prop({type: Boolean, default: false})
+    validateAccount: boolean; //Lo agregue para indicar si el usuario ingreso un email que exista - Sirve para luego poder limipiar la BD
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

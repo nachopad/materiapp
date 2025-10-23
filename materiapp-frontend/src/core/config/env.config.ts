@@ -1,7 +1,9 @@
 import { z } from 'zod';
 
 const envSchema = z.object({
-    VITE_API_BASE_URL: z.string(),
+    VITE_ENV: z.enum(['development', 'production']).default('development'),
+    VITE_API_URL: z.string(),
+    VITE_BACKEND_URL: z.string(),
 });
 
 const { success, data, error } = envSchema.safeParse(import.meta.env);
@@ -11,4 +13,4 @@ if (!success) {
     throw new Error('Invalid environment variables');
 }
 
-export const { VITE_API_BASE_URL } = data;
+export const { VITE_ENV: NODE_ENV, VITE_API_URL, VITE_BACKEND_URL } = data;

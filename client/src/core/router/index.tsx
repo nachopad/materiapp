@@ -12,7 +12,7 @@ const Router = () => {
     return (
         <BrowserRouter>
             <Routes>
-                {isAuthenticated ? (
+                {!isAuthenticated ? (
                     <Route element={<AuthLayout />}>
                         {UserRoutes()}
                         {role === 'admin' && AdminRoutes()}

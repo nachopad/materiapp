@@ -9,8 +9,9 @@ import {
     DropdownMenuTrigger,
 } from '@/shared/components/ui/dropdown-menu';
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/shared/components/ui/sidebar';
-import { BadgeCheck, Bell, ChevronsUpDown, CreditCard, LogOut, MoonIcon, SunIcon } from 'lucide-react';
+import { Bell, ChevronsUpDown, CreditCard, LogOut, MoonIcon, SunIcon, UserCircle } from 'lucide-react';
 import { useTheme } from 'next-themes';
+import { Link } from 'react-router';
 
 interface SidebarFooterProps {
     user: {
@@ -40,9 +41,7 @@ export const SidebarFooterComponent = ({ user }: SidebarFooterProps) => {
                         >
                             <Avatar className="h-8 w-8 rounded-lg">
                                 <AvatarImage src={user.avatar} alt={user.name} />
-                                <AvatarFallback className="rounded-lg bg-primary text-primary-foreground">
-                                    CN
-                                </AvatarFallback>
+                                <AvatarFallback className="rounded-lg text-primary-foreground">CN</AvatarFallback>
                             </Avatar>
                             <div className="grid flex-1 text-left text-sm leading-tight">
                                 <span className="truncate font-medium">{user.name}</span>
@@ -75,17 +74,15 @@ export const SidebarFooterComponent = ({ user }: SidebarFooterProps) => {
                                 {isDark ? <SunIcon /> : <MoonIcon />}
                                 {isDark ? 'Tema claro' : 'Tema oscuro'}
                             </DropdownMenuItem>
-                            {/* <DropdownMenuItem>
-                                <Sparkles />
-                                Upgrade to Pro
-                            </DropdownMenuItem> */}
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator />
                         <DropdownMenuGroup>
-                            <DropdownMenuItem>
-                                <BadgeCheck />
-                                Account
-                            </DropdownMenuItem>
+                            <Link to="/profile">
+                                <DropdownMenuItem>
+                                    <UserCircle />
+                                    Perfil
+                                </DropdownMenuItem>
+                            </Link>
                             <DropdownMenuItem>
                                 <CreditCard />
                                 Billing

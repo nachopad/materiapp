@@ -36,10 +36,10 @@ export const Mobile = () => {
 
     return (
         <div className="h-screen grid grid-rows-[1fr_auto]">
-            <main className="h-[200vh] p-4">
+            <main className="p-4 pb-8">
                 <Outlet />
             </main>
-            <div className="border-t bg-sidebar/50 flex justify-around p-4 fixed bottom-0 left-0 right-0">
+            <div className="border-t bg-background flex justify-around py-2 px-4 sticky bottom-0 left-0 right-0 z-10">
                 {items.map((item) => (
                     <Link key={item.title} to={item.url}>
                         <Button

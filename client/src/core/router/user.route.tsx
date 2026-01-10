@@ -6,6 +6,8 @@ export const UserRoutes = () => {
             <Route path="/" element={<>Dashboard</>} />
             <Route path="/profile" element={<>Profile</>} />
             <Route path="/progress" element={<>Progress</>} />
+            <Route path="/universities" element={<>Universities</>} />
+            <Route path="/calendar" element={<>Calendar</>} />
             {/* Otras rutas */}
         </>
     );

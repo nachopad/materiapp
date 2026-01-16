@@ -1,13 +1,16 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+import { QueryClientProvider } from './core/providers/query-client.provider';
 import { ThemeProvider } from './core/providers/themes.provider';
 import Router from './core/router';
 import './core/styles/index.css';
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
-            <Router />
-        </ThemeProvider>
+        <QueryClientProvider>
+            <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
+                <Router />
+            </ThemeProvider>
+        </QueryClientProvider>
     </StrictMode>
 );

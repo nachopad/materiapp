@@ -23,7 +23,7 @@ export function SubjectNode({ subject, className, style }: SubjectNodeProps) {
                 variant={isApproved ? 'default' : 'secondary'}
                 className={cn(
                     'mb-2 text-center text-sm max-w-[32ch] sm:max-w-full',
-                    isApproved ? 'bg-emerald-500 text-emerald-50' : 'bg-gray-500 text-gray-50',
+                    isApproved ? 'bg-emerald-600 text-emerald-50' : 'bg-gray-600 text-gray-50',
                 )}
             >
                 <span className="truncate">{subject.name}</span>

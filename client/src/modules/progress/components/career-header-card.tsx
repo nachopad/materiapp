@@ -2,6 +2,7 @@ import { Button } from '@/shared/components/ui/button';
 import { TooltipComponent } from '@/shared/components/ui/tooltip';
 import { BookText } from 'lucide-react';
 import type { Career } from '../types';
+import { Link } from 'react-router';
 
 interface CareerHeaderCardProps {
     career: Career;
@@ -21,13 +22,15 @@ export function CareerHeaderCard({ career }: CareerHeaderCardProps) {
                     <h2 className="text-lg font-bold leading-tight">{career.name}</h2>
                 </div>
                 <TooltipComponent text="Carreras">
-                    <Button
-                        size="icon-lg"
-                        variant="outline"
-                        icon={<BookText className="size-5" />}
-                        className="border-b-2! bg-emerald-500! border-emerald-600! text-primary-foreground! hover:bg-emerald-500! hover:opacity-70"
-                        aria-label="Ver detalles"
-                    />
+                    <Link to="/enrollments">
+                        <Button
+                            size="icon-lg"
+                            variant="outline"
+                            icon={<BookText className="size-5" />}
+                            className="border-b-2! bg-emerald-500! border-emerald-600! text-primary-foreground! hover:bg-emerald-500! hover:opacity-70"
+                            aria-label="Ver detalles"
+                        />
+                    </Link>
                 </TooltipComponent>
             </article>
         </header>

@@ -97,7 +97,7 @@ export default function ProfilePage() {
             <Separator className="mt-10 mb-10" />
             <Button
                 variant="outline"
-                className="dark:bg-transparent border-destructive dark:border-destructive"
+                className="bg-transparent! border-destructive! text-destructive! hover:bg-destructive! hover:text-white!"
                 fullWidth
                 icon={<LogOut />}
             >

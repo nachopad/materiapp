@@ -43,7 +43,7 @@ export const Mobile = () => {
                 {items.map((item) => (
                     <Link key={item.title} to={item.url}>
                         <Button
-                            className={cn(location.pathname === item.url && 'border-ring ring-[2px] ring-ring/50')}
+                            className={cn(location.pathname === item.url && 'bg-primary')}
                             variant="ghost"
                             icon={<item.icon className="size-5" />}
                             size={'icon-lg'}

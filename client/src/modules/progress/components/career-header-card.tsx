@@ -14,7 +14,7 @@ interface CareerHeaderCardProps {
 export function CareerHeaderCard({ career }: CareerHeaderCardProps) {
     return (
         <header className="bg-background sticky top-0 z-10">
-            <article className="translate-y-1 flex items-center justify-between gap-4 rounded-lg bg-emerald-500 px-4 py-5 text-primary-foreground">
+            <article className="translate-y-1 flex items-center justify-between gap-4 rounded-lg bg-orange-500 px-4 py-5 text-primary-foreground">
                 <div className="space-y-1 max-w-[80%]">
                     <p className="text-sm opacity-90 truncate uppercase font-semibold tracking-wider">
                         {career.universityName}
@@ -27,7 +27,7 @@ export function CareerHeaderCard({ career }: CareerHeaderCardProps) {
                             size="icon-lg"
                             variant="outline"
                             icon={<BookText className="size-5" />}
-                            className="border-b-2! bg-emerald-500! border-emerald-600! text-primary-foreground! hover:bg-emerald-500! hover:opacity-70"
+                            className="border-b-2! bg-orange-500! border-orange-600! text-primary-foreground! hover:bg-orange-500! hover:opacity-90"
                             aria-label="Ver detalles"
                         />
                     </Link>

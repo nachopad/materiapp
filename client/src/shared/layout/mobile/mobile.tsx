@@ -36,7 +36,7 @@ export const Mobile = () => {
 
     return (
         <div className="h-screen grid grid-rows-[1fr_auto]">
-            <main className="p-4 pb-8">
+            <main className="p-4 pb-8 overflow-x-hidden">
                 <Outlet />
             </main>
             <div className="border-t bg-background flex justify-around py-2 px-4 sticky bottom-0 left-0 right-0 z-10">

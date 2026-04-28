@@ -459,6 +459,12 @@ function LoginForm() {
 
 ### Pattern 4: Responsive Grid System
 
+**Responsive by default — verify at 390px (mobile)**:
+- Flex children: always add `min-w-0` to prevent overflow
+- Text overflow: use `truncate` or `line-clamp-*`
+- Containers: `overflow-hidden` on constrained parents
+- No fixed widths like `w-80` on mobile — use `max-w-*` or fluid widths
+
 ```typescript
 // components/ui/grid.tsx
 import { cn } from '@/lib/utils'

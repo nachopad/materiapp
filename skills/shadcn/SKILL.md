@@ -45,6 +45,13 @@ These rules are **always enforced**. Each links to a file with Incorrect/Correct
 - **Use `cn()` for conditional classes.** Don't write manual template literal ternaries.
 - **No manual `z-index` on overlay components.** Dialog, Sheet, Popover, etc. handle their own stacking.
 
+### Responsive by Default (REQUIRED)
+
+- **Always validate at 390px width.** No horizontal scroll allowed.
+- **Flex children need `min-w-0`.** Prevent overflow in flex layouts.
+- **Text uses `truncate` or `line-clamp-*`.** Never fixed widths on mobile.
+- **Mobile-first approach.** Design for small screens first, expand upward.
+
 ### Forms & Inputs → [forms.md](./rules/forms.md)
 
 - **Forms use `FieldGroup` + `Field`.** Never use raw `div` with `space-y-*` or `grid gap-*` for form layout.

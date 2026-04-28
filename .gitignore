@@ -1,1 +1,12 @@
 .agent
+
+client/coverage/
+client/*.tsbuildinfo
+
+/.claude
+/.codex
+/.gemini
+/.github
+
+CLAUDE.md
+GEMINI.md

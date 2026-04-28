@@ -27,6 +27,12 @@ Load this skill for ANY work in the `client/` directory or when building React/T
 
 ## Critical Rules
 
+0. **Responsive by default** — All UI work must be responsive. Validate at 390px width (iPhone 14/15 viewport). No horizontal scroll ever.
+   - Flex layouts: add `min-w-0` to child elements to prevent overflow
+   - Text overflow: use `truncate` or `line-clamp-*` instead of fixed widths
+   - Containers: use `overflow-hidden` on constrained parent elements
+   - Test at 390px before considering done — DevTools device mode or `window.innerWidth === 390`
+
 1. **Use specialized skills, don't duplicate** — This is a coordinator skill. Load the relevant generic skill for each concern:
     - React 19 patterns → `react-19`
     - UI components → `shadcn`

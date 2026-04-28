@@ -12,6 +12,38 @@ metadata:
 allowed-tools: Read, Edit, Write, Glob, Grep, Bash, WebFetch, WebSearch, Task
 ---
 
+## Responsive by Default (REQUIRED)
+
+All UI components must be verified at mobile widths (390px). No horizontal scroll allowed.
+
+```tsx
+// ✅ Flex children need min-w-0 to prevent overflow
+function Layout() {
+  return (
+    <div className="flex gap-4">
+      <Sidebar />
+      <main className="min-w-0 flex-1">Content</main>  {/* min-w-0 prevents overflow */}
+    </div>
+  );
+}
+
+// ✅ Text truncation for constrained spaces
+function Title({ text }) {
+  return <h2 className="truncate">{text}</h2>;  // handles long text gracefully
+}
+
+// ❌ NEVER: fixed widths that cause overflow on mobile
+function Bad() {
+  return <div className="w-80">...</div>;  // breaks at 390px viewport
+}
+```
+
+Key rules:
+- Flex children that can grow/shrink: always add `min-w-0`
+- Text in limited space: `truncate`, `line-clamp-2`, or explicit `max-w-*`
+- Containers with fixed-height children: `overflow-hidden`
+- Mobile-first: design for 390px first, expand for larger screens
+
 ## No Manual Memoization (REQUIRED)
 
 ```typescript

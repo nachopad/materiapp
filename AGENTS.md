@@ -34,6 +34,7 @@ Use these skills for detailed patterns on-demand:
 | `skill-sync`       | Sync skill metadata to AGENTS.md               | [SKILL.md](skills/skill-sync/SKILL.md)       |
 
 
+
 ### Auto-invoke Skills
 
 When performing these actions, ALWAYS invoke the corresponding skill FIRST:

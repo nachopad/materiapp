@@ -12,12 +12,13 @@ interface CareerHeaderCardProps {
  * Header card displaying university and career information with primary background.
  */
 export function CareerHeaderCard({ career }: CareerHeaderCardProps) {
+    const displayName = career.universityAbbreviation ?? career.universityName;
     return (
         <header className="bg-background sticky top-0 z-10">
             <article className="translate-y-1 flex items-center justify-between gap-4 rounded-lg bg-orange-500 px-4 py-5 text-primary-foreground">
                 <div className="space-y-1 max-w-[80%]">
                     <p className="text-sm opacity-90 truncate uppercase font-semibold tracking-wider">
-                        {career.universityName}
+                        {displayName}
                     </p>
                     <h2 className="text-lg font-bold leading-tight">{career.name}</h2>
                 </div>

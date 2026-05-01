@@ -16,6 +16,7 @@ export interface Career {
     id: string;
     name: string;
     universityName: string;
+    universityAbbreviation?: string;
     universityLogo?: string;
     progress: number;
     approved: number;

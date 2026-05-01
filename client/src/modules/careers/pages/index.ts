@@ -1,0 +1,1 @@
+export { default as CareersPage } from './careers.page';

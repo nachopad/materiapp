@@ -1,7 +1,10 @@
+import { Link } from 'react-router';
+
 import { Avatar, AvatarFallback } from '@/shared/components/ui/avatar';
 import { Badge } from '@/shared/components/ui/badge';
 
 interface UniversityListCardProps {
+    id: string;
     name: string;
     careersCount: number;
 }
@@ -19,10 +22,15 @@ function getInitials(name: string): string {
 
 /**
  * Card component displaying a single university with name and careers count.
+ * Uses semantic <a> element for accessible navigation to careers page.
  */
-export function UniversityListCard({ name, careersCount }: UniversityListCardProps) {
+export function UniversityListCard({ id, name, careersCount }: UniversityListCardProps) {
     return (
-        <article className="rounded-lg border border-border bg-transparent p-4 transition-all hover:opacity-80 overflow-hidden">
+        <Link
+            to={`/universities/${id}/careers`}
+            className="block rounded-lg border border-border bg-transparent p-4 transition-all hover:shadow-sm overflow-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            aria-label={`Ver carreras de ${name}`}
+        >
             <header className="flex items-center gap-3">
                 <Avatar className="h-10 w-10">
                     <AvatarFallback className="bg-muted text-muted-foreground text-sm font-medium">
@@ -36,6 +44,6 @@ export function UniversityListCard({ name, careersCount }: UniversityListCardPro
                     {careersCount} {careersCount === 1 ? 'carrera' : 'carreras'}
                 </Badge>
             </header>
-        </article>
+        </Link>
     );
 }

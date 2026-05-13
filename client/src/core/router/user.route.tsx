@@ -3,11 +3,12 @@ import { ProfilePage, EditProfilePage } from '@/modules/profile/pages';
 import { ProgressPage } from '@/modules/progress/pages';
 import { EnrollmentsPage } from '@/modules/enrollments/pages';
 import { UniversitiesPage } from '@/modules/universities/pages';
+import { HomePage } from '@/modules/dashboard/pages';
 
 export const UserRoutes = () => {
     return (
         <>
-            <Route path="/" element={<>Dashboard</>} />
+            <Route path="/" element={<HomePage />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/profile/edit" element={<EditProfilePage />} />
             <Route path="/progress" element={<ProgressPage />} />

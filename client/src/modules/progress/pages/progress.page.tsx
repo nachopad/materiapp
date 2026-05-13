@@ -1,5 +1,10 @@
+import { useState } from 'react';
+
 import { CareerHeaderCard, CareerStats, SubjectTimeline } from '../components';
+import { SUBJECT_STATUS } from '../types';
 import type { Career } from '../types';
+import { normalizeSubjectStatusUpdate, recalculateCareerProgress } from '../utils';
+import type { SubjectStatusUpdate } from '../utils';
 
 // Mock data for development (remove when backend is ready)
 const MOCK_CAREER: Career = {
@@ -8,37 +13,38 @@ const MOCK_CAREER: Career = {
     universityName: 'Facultad de Ingeniería de Jujuy',
     progress: 50,
     approved: 15,
+    regular: 0,
     pending: 15,
     average: 8.7,
     subjects: [
-        { id: '1', name: 'Programación Estructurada', status: 'approved', year: 1, grade: 8 },
-        { id: '2', name: 'Estructura de Datos', status: 'pending', year: 1 },
-        { id: '3', name: 'Herramientas Informáticas I', status: 'pending', year: 1 },
-        { id: '4', name: 'Inglés I', status: 'pending', year: 1 },
-        { id: '5', name: 'Herramientas Informáticas II', status: 'pending', year: 1 },
-        { id: '6', name: 'Laboratorio de Sistemas Operativos I', status: 'approved', year: 1, grade: 9 },
-        { id: '7', name: 'Inglés II', status: 'pending', year: 1 },
-        { id: '8', name: 'Base de Datos I', status: 'pending', year: 1 },
-        { id: '9', name: 'Laboratorio de Sistemas Operativos II', status: 'pending', year: 2 },
-        { id: '10', name: 'Base de Datos II', status: 'pending', year: 2 },
-        { id: '11', name: 'Programación Visual', status: 'pending', year: 2 },
-        { id: '12', name: 'Inglés III', status: 'pending', year: 2 },
-        { id: '13', name: 'Inglés IV', status: 'pending', year: 2 },
-        { id: '14', name: 'Programación Orientada a Objetos', status: 'pending', year: 2 },
-        { id: '15', name: 'Análisis y Diseño de Sistemas I', status: 'pending', year: 2 },
-        { id: '16', name: 'Álgebra I', status: 'pending', year: 2 },
-        { id: '17', name: 'Álgebra II', status: 'pending', year: 2 },
-        { id: '18', name: 'Programación Concurrente y Paralela', status: 'pending', year: 2 },
-        { id: '19', name: 'Inglés V', status: 'pending', year: 3 },
-        { id: '20', name: 'Redes I', status: 'pending', year: 3 },
-        { id: '21', name: 'Programación y Servicios Web', status: 'pending', year: 3 },
-        { id: '22', name: 'Laboratorio de Programación Orientado a Objetos I', status: 'pending', year: 3 },
-        { id: '23', name: 'Análisis y Diseño de Sistemas II', status: 'pending', year: 3 },
-        { id: '24', name: 'Inglés VI', status: 'pending', year: 3 },
-        { id: '25', name: 'Redes II', status: 'pending', year: 3 },
-        { id: '26', name: 'Laboratorio de Programación Orientado a Objetos II', status: 'pending', year: 3 },
-        { id: '27', name: 'Herramientas Informáticas Avanzadas', status: 'pending', year: 3 },
-        { id: '28', name: 'Legislación y Ejercicio Profesional', status: 'pending', year: 3 },
+        { id: '1', name: 'Programación Estructurada', status: SUBJECT_STATUS.APPROVED, year: 1, grade: 8 },
+        { id: '2', name: 'Estructura de Datos', status: SUBJECT_STATUS.PENDING, year: 1 },
+        { id: '3', name: 'Herramientas Informáticas I', status: SUBJECT_STATUS.PENDING, year: 1 },
+        { id: '4', name: 'Inglés I', status: SUBJECT_STATUS.PENDING, year: 1 },
+        { id: '5', name: 'Herramientas Informáticas II', status: SUBJECT_STATUS.PENDING, year: 1 },
+        { id: '6', name: 'Laboratorio de Sistemas Operativos I', status: SUBJECT_STATUS.APPROVED, year: 1, grade: 9 },
+        { id: '7', name: 'Inglés II', status: SUBJECT_STATUS.PENDING, year: 1 },
+        { id: '8', name: 'Base de Datos I', status: SUBJECT_STATUS.PENDING, year: 1 },
+        { id: '9', name: 'Laboratorio de Sistemas Operativos II', status: SUBJECT_STATUS.PENDING, year: 2 },
+        { id: '10', name: 'Base de Datos II', status: SUBJECT_STATUS.PENDING, year: 2 },
+        { id: '11', name: 'Programación Visual', status: SUBJECT_STATUS.PENDING, year: 2 },
+        { id: '12', name: 'Inglés III', status: SUBJECT_STATUS.PENDING, year: 2 },
+        { id: '13', name: 'Inglés IV', status: SUBJECT_STATUS.PENDING, year: 2 },
+        { id: '14', name: 'Programación Orientada a Objetos', status: SUBJECT_STATUS.PENDING, year: 2 },
+        { id: '15', name: 'Análisis y Diseño de Sistemas I', status: SUBJECT_STATUS.PENDING, year: 2 },
+        { id: '16', name: 'Álgebra I', status: SUBJECT_STATUS.PENDING, year: 2 },
+        { id: '17', name: 'Álgebra II', status: SUBJECT_STATUS.PENDING, year: 2 },
+        { id: '18', name: 'Programación Concurrente y Paralela', status: SUBJECT_STATUS.PENDING, year: 2 },
+        { id: '19', name: 'Inglés V', status: SUBJECT_STATUS.PENDING, year: 3 },
+        { id: '20', name: 'Redes I', status: SUBJECT_STATUS.PENDING, year: 3 },
+        { id: '21', name: 'Programación y Servicios Web', status: SUBJECT_STATUS.PENDING, year: 3 },
+        { id: '22', name: 'Laboratorio de Programación Orientado a Objetos I', status: SUBJECT_STATUS.PENDING, year: 3 },
+        { id: '23', name: 'Análisis y Diseño de Sistemas II', status: SUBJECT_STATUS.PENDING, year: 3 },
+        { id: '24', name: 'Inglés VI', status: SUBJECT_STATUS.PENDING, year: 3 },
+        { id: '25', name: 'Redes II', status: SUBJECT_STATUS.PENDING, year: 3 },
+        { id: '26', name: 'Laboratorio de Programación Orientado a Objetos II', status: SUBJECT_STATUS.PENDING, year: 3 },
+        { id: '27', name: 'Herramientas Informáticas Avanzadas', status: SUBJECT_STATUS.PENDING, year: 3 },
+        { id: '28', name: 'Legislación y Ejercicio Profesional', status: SUBJECT_STATUS.PENDING, year: 3 },
     ],
 };
 
@@ -46,6 +52,7 @@ const MOCK_CAREER: Career = {
  * Progress page displaying career progress and subject timeline.
  */
 export default function ProgressPage() {
+    const [career, setCareer] = useState(MOCK_CAREER);
     // const { data: careers, isLoading, isError, error } = useCareers();
     // const { selectedCareerId, selectCareer } = useProgressStore();
 
@@ -58,7 +65,24 @@ export default function ProgressPage() {
 
     // TODO: Remove mock and use real data when backend is ready
     // const selectedCareer = careers?.find((c) => c.id === selectedCareerId);
-    const selectedCareer = MOCK_CAREER;
+    const selectedCareer = career;
+
+    function handleSubjectChange(subjectId: string, update: SubjectStatusUpdate) {
+        setCareer((currentCareer) => {
+            const normalizedUpdate = normalizeSubjectStatusUpdate(update);
+            const subjects = currentCareer.subjects.map((subject) =>
+                subject.id === subjectId
+                    ? { ...subject, status: normalizedUpdate.status, grade: normalizedUpdate.grade }
+                    : subject,
+            );
+
+            return {
+                ...currentCareer,
+                ...recalculateCareerProgress(subjects),
+                subjects,
+            };
+        });
+    }
 
     // if (isLoading) {
     //     return (
@@ -109,7 +133,7 @@ export default function ProgressPage() {
             <div className="space-y-6">
                 <CareerHeaderCard career={selectedCareer} />
                 <CareerStats career={selectedCareer} />
-                <SubjectTimeline subjects={selectedCareer.subjects} />
+                <SubjectTimeline onSubjectChange={handleSubjectChange} subjects={selectedCareer.subjects} />
             </div>
         </>
     );

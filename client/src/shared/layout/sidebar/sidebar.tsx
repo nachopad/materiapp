@@ -1,5 +1,5 @@
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/shared/components/ui/sidebar';
-import { Outlet } from 'react-router';
+import { Outlet, useLocation } from 'react-router';
 import { AppSidebar } from './app-sidebar/app-sidebar';
 import { Separator } from '@/shared/components/ui/separator';
 import {
@@ -10,8 +10,12 @@ import {
     BreadcrumbPage,
     BreadcrumbSeparator,
 } from '@/shared/components/ui/breadcrumb';
+import { useBreadcrumbLabel } from '@/shared/hooks/use-breadcrumb';
 
 export const Sidebar = () => {
+    const breadcrumbLabel = useBreadcrumbLabel();
+    const location = useLocation();
+
     return (
         <SidebarProvider>
             <AppSidebar />
@@ -25,10 +29,14 @@ export const Sidebar = () => {
                                 <BreadcrumbItem className="hidden md:block">
                                     <BreadcrumbLink href="/">Inicio</BreadcrumbLink>
                                 </BreadcrumbItem>
-                                <BreadcrumbSeparator className="hidden md:block" />
-                                <BreadcrumbItem>
-                                    <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-                                </BreadcrumbItem>
+                                {location.pathname !== '/' && (
+                                    <>
+                                        <BreadcrumbSeparator className="hidden md:block" />
+                                        <BreadcrumbItem>
+                                            <BreadcrumbPage>{breadcrumbLabel}</BreadcrumbPage>
+                                        </BreadcrumbItem>
+                                    </>
+                                )}
                             </BreadcrumbList>
                         </Breadcrumb>
                     </div>

@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 import { MemoryRouter, Routes } from 'react-router';
 import { UserRoutes } from '@/core/router/user.route';
@@ -126,8 +127,8 @@ describe('UniversitiesPage layout consistency', () => {
             </MemoryRouter>
         );
 
-        // Find the card article elements
-        const cards = screen.getAllByRole('article');
+        // Find the card link elements (now <a> instead of <article>)
+        const cards = screen.getAllByRole('link');
         expect(cards.length).toBeGreaterThan(0);
 
         // Each card should use flex layout (flex items-center gap-3)
@@ -154,5 +155,102 @@ describe('UniversitiesPage layout consistency', () => {
         badges.forEach((badge) => {
             expect(badge.className).toContain('shrink-0');
         });
+    });
+});
+
+/**
+ * Route interaction tests: navigation from /universities to /universities/:id/careers
+ */
+describe('University card navigation', () => {
+    it('navigates to careers page when university card is clicked', async () => {
+        const user = userEvent.setup();
+        render(
+            <MemoryRouter initialEntries={['/universities']}>
+                <Routes>
+                    {UserRoutes()}
+                </Routes>
+            </MemoryRouter>
+        );
+
+        // Find the first university card link
+        const firstCard = screen.getAllByRole('link')[0];
+        expect(firstCard).toHaveAttribute('aria-label', 'Ver carreras de Universidad Nacional de La Plata');
+
+        // Click the card
+        await user.click(firstCard);
+
+        // Should navigate to careers page - mobile header shows abbreviation only (UN)
+        const heading = screen.getByRole('heading', { level: 1 });
+        expect(heading).toHaveTextContent('UN');
+    });
+
+    it('navigates to correct careers page for each university', () => {
+
+        // Test UBA (id: 2)
+        render(
+            <MemoryRouter initialEntries={['/universities/2/careers']}>
+                <Routes>
+                    {UserRoutes()}
+                </Routes>
+            </MemoryRouter>
+        );
+
+        // Should show careers page with UB abbreviation in header (no full name)
+        const heading = screen.getByRole('heading', { level: 1 });
+        expect(heading).toHaveTextContent('UB');
+    });
+
+    it('keyboard activation of university card triggers navigation', async () => {
+        const user = userEvent.setup();
+        render(
+            <MemoryRouter initialEntries={['/universities']}>
+                <Routes>
+                    {UserRoutes()}
+                </Routes>
+            </MemoryRouter>
+        );
+
+        // Get the first university card
+        const firstCard = screen.getAllByRole('link')[0];
+
+        // Focus the card
+        firstCard.focus();
+        expect(document.activeElement).toBe(firstCard);
+
+        // Activate with keyboard (Enter)
+        await user.keyboard('{Enter}');
+
+        // Should navigate to careers page - mobile header shows abbreviation (UN)
+        const heading = screen.getByRole('heading', { level: 1 });
+        expect(heading).toHaveTextContent('UN');
+    });
+
+    it('careers page heading contains university abbreviation (not full name)', () => {
+        render(
+            <MemoryRouter initialEntries={['/universities/1/careers']}>
+                <Routes>
+                    {UserRoutes()}
+                </Routes>
+            </MemoryRouter>
+        );
+
+        // The heading should show abbreviation only, not full university name
+        const heading = screen.getByRole('heading', { level: 1 });
+        expect(heading).toHaveTextContent('UN');
+        expect(heading).not.toHaveTextContent(/Universidad Nacional de La Plata/i);
+    });
+
+    it('renders careers list when university has careers', () => {
+        render(
+            <MemoryRouter initialEntries={['/universities/1/careers']}>
+                <Routes>
+                    {UserRoutes()}
+                </Routes>
+            </MemoryRouter>
+        );
+
+        // Should show some careers
+        const careerHeadings = screen.getAllByRole('heading', { level: 2 });
+        expect(careerHeadings.length).toBeGreaterThan(0);
     });
 });

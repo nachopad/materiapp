@@ -81,6 +81,7 @@ export default function UniversitiesPage({ universities = MOCK_UNIVERSITIES }: {
                         {filteredUniversities.map((university) => (
                             <UniversityListCard
                                 key={university.id}
+                                id={university.id}
                                 name={university.name}
                                 careersCount={university.careersCount}
                             />

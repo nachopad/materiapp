@@ -68,6 +68,38 @@ client/
 
 Feature pages/components/schemas live inside each module (e.g. `src/modules/auth/pages`, `src/modules/auth/components`) instead of root-level `src/pages` or `src/components`.
 
+### Form Architecture (Mandatory Rules)
+
+All forms that handle domain data validation MUST follow these rules:
+
+1. **Module-level schemas** — Form schemas MUST live under `modules/<module>/schemas/*.schema.ts`. Do NOT define schemas inline within component files.
+
+2. **Shared Form primitives** — Form components MUST use shared UI form primitives (`Form`, `FormField`, `FormItem`, `FormControl`, `FormMessage`) for field binding and error rendering. Do NOT use manual `errors.x && <p>` error wiring.
+
+3. **Inline schema justification** — Inline component schemas are only allowed for trivial one-off forms and require explicit justification comment.
+
+```typescript
+// ✅ CORRECT: Schema imported from module-level location
+import { enrollmentSchema, type EnrollmentFormValues } from '@/modules/careers/schemas/enrollment-form.schema';
+import { Form, FormField, FormItem, FormControl, FormMessage } from '@/shared/components/ui/form';
+
+// ❌ WRONG: Inline schema definition
+const enrollmentSchema = z.object({ ... });
+```
+
+```typescript
+// ✅ CORRECT: Error rendered via FormMessage
+<FormField control={form.control} name="fullDate" render={({ field }) => (
+  <FormItem>
+    <FormControl><Input {...field} /></FormControl>
+    <FormMessage />
+  </FormItem>
+)} />
+
+// ❌ WRONG: Manual error wiring
+{errors.fullDate && <p className="text-destructive">{errors.fullDate.message}</p>}
+```
+
 ### Tech Stack
 
 | Layer         | Technology                        |

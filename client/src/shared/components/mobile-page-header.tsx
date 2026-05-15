@@ -1,22 +1,24 @@
 import { ToggleTheme } from '@/shared/components/toggle-theme';
-import { Button } from '@/shared/components/ui/button';
 import { cn } from '@/shared/lib/utils';
 import { ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router';
+import { Avatar, AvatarFallback } from './ui/avatar';
 import { TooltipComponent } from './ui/tooltip';
 
 interface MobilePageHeaderProps {
     title: string;
     backHref?: string;
     showThemeToggle?: boolean;
+    initials?: string;
     className?: string;
 }
 
 /**
  * Reusable mobile-only fixed header with centered title.
- * Optionally shows a back button on the left and theme toggle on the right.
+ * Optionally shows a back button on the left, initials avatar in the center,
+ * and theme toggle on the right.
  */
-export function MobilePageHeader({ title, backHref, showThemeToggle = true, className }: MobilePageHeaderProps) {
+export function MobilePageHeader({ title, backHref, showThemeToggle = true, initials, className }: MobilePageHeaderProps) {
     return (
         <>
             <div
@@ -27,19 +29,23 @@ export function MobilePageHeader({ title, backHref, showThemeToggle = true, clas
             >
                 {backHref && (
                     <TooltipComponent text="Volver">
-                        <Button
-                            variant="outline"
-                            size="icon-sm"
-                            className="absolute left-4 dark:bg-background dark:border-border/25"
+                        <Link
+                            to={backHref}
+                            className="absolute left-4 flex items-center justify-center h-9 w-9 rounded-md border border-border bg-background hover:bg-accent cursor-pointer dark:bg-background dark:border-border/25"
                             aria-label="Volver"
                         >
-                            <Link to={backHref} className="flex items-center justify-center w-full h-full">
-                                <ArrowLeft className="h-4 w-4" />
-                            </Link>
-                        </Button>
+                            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+                        </Link>
                     </TooltipComponent>
                 )}
-                <h1 className="text-lg font-semibold tracking-wider uppercase">{title}</h1>
+                {initials ? (
+                    <Avatar className="h-9 w-9 absolute left-1/2 -translate-x-1/2">
+                        <AvatarFallback className="bg-muted text-muted-foreground text-sm font-medium">
+                            {initials}
+                        </AvatarFallback>
+                    </Avatar>
+                ) : null}
+                <h1 className={cn('text-lg font-semibold tracking-wider uppercase', initials ? 'pl-12' : '')}>{title}</h1>
                 {showThemeToggle && (
                     <ToggleTheme
                         variant="outline"

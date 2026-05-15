@@ -77,11 +77,13 @@
 }
 
 .dark {
-    --background: oklch(26.299% 0.0127 258.41);
+    --background: hsl(220, 10%, 10%);
+    /* --background: oklch(26.299% 0.0127 258.41); */
     --foreground: oklch(98.359% 0.00216 199.979);
     --card: oklch(45.463% 0.0201 259.45);
     --card-foreground: oklch(98.359% 0.00216 199.979);
-    --popover: oklch(45.463% 0.0201 259.45);
+    --popover: hsl(220, 10%, 10%);
+    /* --popover: oklch(45.463% 0.0201 259.45); */
     --popover-foreground: oklch(98.359% 0.00216 199.979);
     --primary: oklch(69.961% 0.20193 44.43);
     --primary-foreground: oklch(97.962% 0.01567 73.569);

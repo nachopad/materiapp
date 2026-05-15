@@ -19,11 +19,11 @@ const items = [
         url: '/universities',
         icon: University,
     },
-    {
-        title: 'Calendario',
-        url: '/calendar',
-        icon: Calendar,
-    },
+    // {
+    //     title: 'Calendario',
+    //     url: '/calendar',
+    //     icon: Calendar,
+    // },
     {
         title: 'Perfil',
         url: '/profile',

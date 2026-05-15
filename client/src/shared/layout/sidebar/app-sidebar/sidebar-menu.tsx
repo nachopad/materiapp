@@ -24,11 +24,11 @@ const items: { title: string; url: string; icon: LucideIcon }[] = [
         url: '/universities',
         icon: University,
     },
-    {
-        title: 'Calendario',
-        url: '/calendar',
-        icon: Calendar,
-    },
+    // {
+    //     title: 'Calendario',
+    //     url: '/calendar',
+    //     icon: Calendar,
+    // },
 ];
 
 export const SidebarMenu = () => {

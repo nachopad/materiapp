@@ -1,9 +1,10 @@
-import { useMemo } from 'react';
 import type { Subject } from '../types';
+import type { SubjectStatusUpdate } from '../utils';
 import { SubjectNode } from './subject-node';
 import { YearDivider } from './year-divider';
 
 interface SubjectTimelineProps {
+    onSubjectChange?: (subjectId: string, update: SubjectStatusUpdate) => void;
     subjects: Subject[];
 }
 
@@ -69,8 +70,8 @@ function getSnakePathOffset(index: number, total: number): number {
  * Timeline displaying subjects grouped by year with snake path effect.
  * Each year group has its own snake path that starts and ends centered.
  */
-export function SubjectTimeline({ subjects }: SubjectTimelineProps) {
-    const groupedSubjects = useMemo(() => groupSubjectsByYear(subjects), [subjects]);
+export function SubjectTimeline({ onSubjectChange, subjects }: SubjectTimelineProps) {
+    const groupedSubjects = groupSubjectsByYear(subjects);
     const years = Array.from(groupedSubjects.keys()).sort((a, b) => a - b);
 
     if (subjects.length === 0) {
@@ -92,6 +93,7 @@ export function SubjectTimeline({ subjects }: SubjectTimelineProps) {
                                 return (
                                     <SubjectNode
                                         key={subject.id}
+                                        onSubjectChange={onSubjectChange}
                                         subject={subject}
                                         style={{ transform: `translateX(${offset}px)` }}
                                     />

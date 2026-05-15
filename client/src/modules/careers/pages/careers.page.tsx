@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { useParams, Link } from 'react-router';
 import { Search } from 'lucide-react';
 
-import { Input } from '@/shared/components/ui/input';
+import { EmptySearch } from '@/shared/components/empty-search';
 import { MobilePageHeader } from '@/shared/components/mobile-page-header';
+import { Input } from '@/shared/components/ui/input';
 import { CareerList } from '../components';
 
 interface MockCareer {
@@ -132,19 +133,11 @@ export default function CareersPage({
                         </p>
                     </div>
                 ) : filteredCareers.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center p-8 space-y-4">
-                        <p className="text-muted-foreground text-center">No se encontraron carreras</p>
-                        <p className="text-sm text-muted-foreground text-center">
-                            Intenta con otro término de búsqueda
-                        </p>
-                        <button
-                            type="button"
-                            onClick={handleClearSearch}
-                            className="text-sm text-primary hover:underline"
-                        >
-                            Limpiar búsqueda
-                        </button>
-                    </div>
+                    <EmptySearch
+                        title="No se encontraron carreras"
+                        description="Intenta con otro término de búsqueda"
+                        onClearSearch={handleClearSearch}
+                    />
                 ) : (
                     <CareerList careers={filteredCareers} />
                 )}

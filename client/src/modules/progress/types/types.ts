@@ -2,7 +2,13 @@
  * Progress module types
  */
 
-export type SubjectStatus = 'approved' | 'regular' | 'pending';
+export const SUBJECT_STATUS = {
+    APPROVED: 'approved',
+    REGULAR: 'regular',
+    PENDING: 'pending',
+} as const;
+
+export type SubjectStatus = (typeof SUBJECT_STATUS)[keyof typeof SUBJECT_STATUS];
 
 export interface Subject {
     id: string;
@@ -20,6 +26,7 @@ export interface Career {
     universityLogo?: string;
     progress: number;
     approved: number;
+    regular: number;
     pending: number;
     average: number;
     subjects: Subject[];

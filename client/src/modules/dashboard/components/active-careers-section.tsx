@@ -1,6 +1,8 @@
 import { GraduationCap } from 'lucide-react';
+
 import { Progress } from '@/shared/components/ui/progress';
 import { Badge } from '@/shared/components/ui/badge';
+import { DashboardSectionHeader } from './dashboard-section-header';
 import type { ActiveCareer } from '../types';
 
 interface ActiveCareersSectionProps {
@@ -13,12 +15,7 @@ interface ActiveCareersSectionProps {
 export function ActiveCareersSection({ careers }: ActiveCareersSectionProps) {
     return (
         <section className="space-y-4">
-            <div className="flex items-center gap-2">
-                <div className="aspect-square h-6 w-6 rounded-sm border border-border flex items-center justify-center shrink-0">
-                    <GraduationCap className="h-4 w-4 text-primary" data-icon="inline-start" />
-                </div>
-                <h2 className="text-xl font-semibold">Carreras activas</h2>
-            </div>
+            <DashboardSectionHeader title="Carreras activas" icon={GraduationCap} />
             <div className="space-y-2">
                 {careers.length === 0 ? (
                     <div className="rounded-lg border border-border bg-transparent p-4 text-center text-muted-foreground transition-all hover:opacity-80 dark:border-border/40">

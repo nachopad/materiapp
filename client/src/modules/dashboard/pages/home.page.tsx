@@ -2,6 +2,7 @@ import { AcademicSummarySection, CurrentSubjectsSection, ActiveCareersSection } 
 import type { DashboardHome } from '../types';
 import { useUserStore } from '@/modules/profile/store';
 import { Pity } from '@/assets/icons';
+import { Separator } from '@/shared/components/ui/separator';
 
 const MOCK_DASHBOARD: DashboardHome = {
     summary: {
@@ -16,7 +17,13 @@ const MOCK_DASHBOARD: DashboardHome = {
         { id: '3', name: 'Base de Datos', careerName: 'Analista Programador' },
     ],
     activeCareersList: [
-        { id: '1', name: 'Analista Programador Universitario', facultyName: 'Facultad de Informática', year: 2, progress: 35 },
+        {
+            id: '1',
+            name: 'Analista Programador Universitario',
+            facultyName: 'Facultad de Informática',
+            year: 2,
+            progress: 35,
+        },
         { id: '2', name: 'Licenciatura en Sistemas', facultyName: 'Facultad de Informática', year: 1, progress: 20 },
     ],
 };
@@ -36,7 +43,7 @@ export default function HomePage({
     const displayName = userName || user?.fullName?.split(' ')[0] || 'Usuario';
 
     return (
-        <div className="container mx-auto max-w-3xl px-4 py-6 space-y-8">
+        <div className="container mx-auto max-w-3xl px-4 py-6 ">
             {/* Welcome header */}
             <div className="flex items-center gap-3">
                 <Pity className="h-10 w-10 shrink-0" aria-label="icono de bienvenida" />
@@ -45,10 +52,12 @@ export default function HomePage({
                     <p className="text-muted-foreground">Aquí tienes un resumen de tu actividad académica</p>
                 </div>
             </div>
-
-            <AcademicSummarySection summary={dashboard.summary} />
-            <CurrentSubjectsSection subjects={dashboard.currentSubjects} />
-            <ActiveCareersSection careers={dashboard.activeCareersList} />
+            <Separator className="mt-4 mb-4" />
+            <div className='space-y-4'>
+                <AcademicSummarySection summary={dashboard.summary} />
+                <CurrentSubjectsSection subjects={dashboard.currentSubjects} />
+                <ActiveCareersSection careers={dashboard.activeCareersList} />
+            </div>
         </div>
     );
 }

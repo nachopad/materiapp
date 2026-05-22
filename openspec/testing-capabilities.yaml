@@ -1,0 +1,76 @@
+# Testing Capabilities — materiapp
+# Auto-detected from project files
+
+client:
+  runner: Vitest 4.1.5
+  environment: jsdom
+  setup_file: client/src/test/setup.ts
+  coverage_provider: v8
+  coverage_scope:
+    include:
+      - src/modules/**
+    exclude:
+      - src/**/*.d.ts
+      - src/**/*.config.*
+  coverage_reporters:
+    - text
+    - json
+    - html
+  test_patterns:
+    - src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}
+  test_libraries:
+    - @testing-library/react 16.3.2
+    - @testing-library/jest-dom 6.9.1
+    - @testing-library/user-event 14.6.1
+  existing_tests_count: 18
+  strict_tdd: true
+  commands:
+    test: cd client && pnpm test
+    test_watch: cd client && pnpm test:watch
+    test_coverage: cd client && pnpm test:coverage
+
+server:
+  runner: Jest 30.0.0
+  environment: node
+  transform: ts-jest
+  coverage_directory: coverage
+  coverage_scope:
+    include:
+      - "**/*.(t|j)s"
+    exclude: []
+  test_patterns:
+    - "**/*.spec.ts"
+    - "**/*.e2e-spec.ts"
+  e2e_config: test/jest-e2e.json
+  strict_tdd: true
+  commands:
+    test: cd server && pnpm test
+    test_watch: cd server && pnpm test:watch
+    test_coverage: cd server && pnpm test:cov
+    test_e2e: cd server && pnpm test:e2e
+
+linting:
+  client:
+    tool: ESLint 9.33.0
+    config: client/eslint.config.js
+    plugins:
+      - @eslint/js
+      - typescript-eslint
+      - eslint-plugin-react-hooks
+      - eslint-plugin-react-refresh
+  server:
+    tool: ESLint 9.18.0
+    config: server/eslint.config.mjs
+    plugins:
+      - @eslint/eslintrc
+      - @eslint/js
+      - typescript-eslint
+      - eslint-config-prettier
+      - eslint-plugin-prettier
+
+type_checking:
+  client: TypeScript 5.8.3 (tsc -b)
+  server: TypeScript 5.7.3
+
+formatter:
+  server: Prettier 3.4.2

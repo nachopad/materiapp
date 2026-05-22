@@ -27,7 +27,7 @@ describe('Home route integration', () => {
         expect(screen.queryByText('Inicio')).not.toBeInTheDocument();
 
         // Wireframe sections are present (except QuickActions which was removed)
-        expect(screen.getByText('Resumen Académico')).toBeInTheDocument();
+        expect(screen.getByText('Resumen académico')).toBeInTheDocument();
         expect(screen.queryByText('Estado del Alumno')).not.toBeInTheDocument();
         expect(screen.queryByText('Tareas pendientes')).not.toBeInTheDocument();
         // QuickActions section removed - "Acceso Rápido" should not appear
@@ -53,7 +53,7 @@ describe('Home route integration', () => {
         // If this were the old placeholder, we'd see "Dashboard"
         // Proving it's HomePage by checking for specific page content
         expect(screen.queryByText('Dashboard')).not.toBeInTheDocument();
-        expect(screen.getByText('Resumen Académico')).toBeInTheDocument();
+        expect(screen.getByText('Resumen académico')).toBeInTheDocument();
     });
 
     it('renders at / path, not at other routes', () => {
@@ -66,7 +66,7 @@ describe('Home route integration', () => {
         );
 
         // Verify we're on dashboard home, not universities
-        expect(screen.getByText('Resumen Académico')).toBeInTheDocument();
+        expect(screen.getByText('Resumen académico')).toBeInTheDocument();
         expect(screen.queryByText('Universidades')).not.toBeInTheDocument();
     });
 });
@@ -97,7 +97,7 @@ describe('HomePage layout consistency', () => {
         );
 
         // Academic summary is rendered
-        const summaryHeading = screen.getByText('Resumen Académico');
+        const summaryHeading = screen.getByText('Resumen académico');
         expect(summaryHeading).toBeInTheDocument();
 
         // Quick actions section was removed per spec

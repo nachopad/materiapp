@@ -14,6 +14,7 @@ Last updated: 2026-05-22
 - C:\Users\maxi1\.config\opencode\skills
 - C:\Users\maxi1\.claude\skills
 - C:\Users\maxi1\.gemini\skills
+- C:\Users\maxi1\.gemini\antigravity\skills
 - C:\Users\maxi1\.copilot\skills
 - C:\Users\maxi1\.openclaw\skills
 

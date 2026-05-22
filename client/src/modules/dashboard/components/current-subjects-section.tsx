@@ -1,4 +1,6 @@
 import { BookOpen } from 'lucide-react';
+
+import { DashboardSectionHeader } from './dashboard-section-header';
 import type { CurrentSubject } from '../types';
 
 interface CurrentSubjectsSectionProps {
@@ -11,12 +13,7 @@ interface CurrentSubjectsSectionProps {
 export function CurrentSubjectsSection({ subjects }: CurrentSubjectsSectionProps) {
     return (
         <section className="space-y-4">
-            <div className="flex items-center gap-2">
-                <div className="aspect-square h-6 w-6 rounded-sm border border-border flex items-center justify-center shrink-0">
-                    <BookOpen className="h-4 w-4 text-primary" data-icon="inline-start" />
-                </div>
-                <h2 className="text-xl font-semibold">Materias cursando actualmente</h2>
-            </div>
+            <DashboardSectionHeader title="Materias cursando actualmente" icon={BookOpen} />
             <div className="space-y-2">
                 {subjects.length === 0 ? (
                     <div className="rounded-lg border border-border bg-transparent p-4 text-center text-muted-foreground dark:border-border/40">

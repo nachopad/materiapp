@@ -9,6 +9,7 @@ Follow the patterns defined in:
 Zod schemas | `zod-4` |
 
 
+
 ### Auto-invoke Skills
 
 When performing these actions, ALWAYS invoke the corresponding skill FIRST:
@@ -20,6 +21,11 @@ When performing these actions, ALWAYS invoke the corresponding skill FIRST:
 | Creating shadcn components | `shadcn` |
 | Creating Tailwind design systems | `tailwind-design-system` |
 | Creating Zod schemas | `zod-4` |
+| Implementing TanStack Query patterns in React applications'
+    allowed-tools: Read, Edit, Write, Glob, Grep, Bash, WebFetch, WebSearch, Task | `tanstack-query-best-practices` |
+| Using Zustand stores | `zustand-5` |
+| Writing React components | `react-19` |
+| Writing TypeScript types/interfaces | `typescript` |Zod schemas | `zod-4` |
 | Using Zustand stores | `zustand-5` |
 | Writing React components | `react-19` |
 | Writing TypeScript types/interfaces | `typescript` |Zod schemas | `zod-4` |

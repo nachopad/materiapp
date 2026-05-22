@@ -26,7 +26,7 @@ export const { generateCsrfToken, validateRequest, doubleCsrfProtection } =
     getSecret: () => CSRF_SECRET, // Returns secret for CSRF generation.
     getCsrfTokenFromRequest: (req) => req.headers['x-csrf-token'] as string, // Gets CSRF token from request header.
     getSessionIdentifier: (req) => {
-      const access_token = req.cookies['access_token'] as string;
+      const access_token = req.cookies['materiapp_access_token'] as string;
       if (!access_token) return 'anon';
       try {
         const payload = jwt.verify(

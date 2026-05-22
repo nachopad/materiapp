@@ -1,26 +1,38 @@
 import { BrowserRouter, Route, Routes } from 'react-router';
 
+import { AuthBootstrap } from '@/modules/auth/components/auth-bootstrap';
+import { ProtectedRoute, PublicOnlyRoute, RoleRoute } from '@/modules/auth/components/route-gates';
+import { useIsAuthenticated } from '@/modules/auth/hooks/use-auth';
+import { AUTH_ROLE } from '@/modules/auth/types/auth.types';
 import { AuthLayout } from '@/shared/layout/auth.layout';
+
 import { AdminRoutes } from './admin.route';
 import { PublicRoutes } from './public.route';
 import { UserRoutes } from './user.route';
 
 const Router = () => {
-    const isAuthenticated = true; // Placeholder for actual authentication logic
-    const role: string = 'admin'; // Placeholder for actual user role logic
+    const isAuthenticated = useIsAuthenticated();
 
     return (
         <BrowserRouter>
-            <Routes>
-                {isAuthenticated ? (
-                    <Route element={<AuthLayout />}>
-                        {UserRoutes()}
-                        {role === 'admin' && AdminRoutes()}
-                    </Route>
-                ) : (
-                    PublicRoutes()
-                )}
-            </Routes>
+            <AuthBootstrap>
+                <Routes>
+                    {isAuthenticated ? (
+                        <Route element={<AuthLayout />}>
+                            <Route element={<ProtectedRoute />}>
+                                {UserRoutes()}
+                            </Route>
+                            <Route element={<RoleRoute role={AUTH_ROLE.ADMIN} />}>
+                                {AdminRoutes()}
+                            </Route>
+                        </Route>
+                    ) : (
+                        <Route element={<PublicOnlyRoute />}>
+                            {PublicRoutes()}
+                        </Route>
+                    )}
+                </Routes>
+            </AuthBootstrap>
         </BrowserRouter>
     );
 };

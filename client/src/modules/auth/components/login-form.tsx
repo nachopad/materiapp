@@ -1,8 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Lock, Mail } from 'lucide-react';
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 
 import { Google } from '@/assets/icons';
 import { Button } from '@/shared/components/ui/button';
@@ -10,27 +9,33 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from '@/shared/co
 import { Input } from '@/shared/components/ui/input';
 import { TextDivider } from '@/shared/components/text-divider';
 
+import { useAuthStore } from '../store/auth.store';
 import { AuthMobileHeader } from './auth-mobile-header';
 import { loginSchema, type LoginFormValues } from '../schemas/login-form.schema';
 
 export function LoginForm() {
-    const [isLoading, setIsLoading] = useState(false);
+    const navigate = useNavigate();
+    const isLoading = useAuthStore((state) => state.status === 'loading');
 
     const form = useForm<LoginFormValues>({
         resolver: zodResolver(loginSchema),
         defaultValues: {
             email: '',
             password: '',
+            root: undefined,
         },
     });
 
     async function onSubmit(data: LoginFormValues) {
-        setIsLoading(true);
-        // Simulate API call
-        setTimeout(() => {
-            console.log(data);
-            setIsLoading(false);
-        }, 1000);
+        try {
+            await useAuthStore.getState().login(data);
+            navigate('/');
+        } catch {
+            form.setError('root', {
+                type: 'manual',
+                message: 'Credenciales inválidas. Por favor, intentalo de nuevo.',
+            });
+        }
     }
 
     return (
@@ -77,6 +82,16 @@ export function LoginForm() {
                                         {...field}
                                     />
                                 </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    <FormField
+                        control={form.control}
+                        name="root"
+                        render={() => (
+                            <FormItem>
                                 <FormMessage />
                             </FormItem>
                         )}

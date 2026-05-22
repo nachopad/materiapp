@@ -48,6 +48,8 @@ export const { generateCsrfToken, validateRequest, doubleCsrfProtection } =
       const skipRoutes = [
         { method: 'POST', url: '/api/auth/login' },
         { method: 'POST', url: '/api/auth/register' },
+        { method: 'POST', url: '/api/auth/logout' },
+        { method: 'POST', url: '/api/auth/refresh' },
       ];
 
       for (const route of skipRoutes) {

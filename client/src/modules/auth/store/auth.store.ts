@@ -44,14 +44,9 @@ export const useAuthStore = create<AuthState>()(
             },
 
             logout: async () => {
-                try {
-                    await authService.logout();
-                } catch {
-                    // swallow error; always reset state
-                } finally {
-                    queryClient.clear();
-                    set({ status: 'anonymous', user: null });
-                }
+                await authService.logout();
+                queryClient.clear();
+                set({ status: 'anonymous', user: null });
             },
 
             clear: () => {

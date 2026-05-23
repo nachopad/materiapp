@@ -18,6 +18,8 @@ vi.mock('../services/auth.service', () => ({
     },
 }));
 
+import { AUTH_ROLE } from '../types/auth.types';
+
 import { useAuthStore } from './auth.store';
 
 describe('auth.store', () => {
@@ -91,16 +93,17 @@ describe('auth.store', () => {
         expect(useAuthStore.getState().user).toBeNull();
     });
 
-    it('logout: resets to anonymous even if service fails', async () => {
+    it('logout: throws and preserves authenticated state on service failure', async () => {
+        const user = { id: '3', email: 'c@d.com', name: 'Out', roles: [AUTH_ROLE.USER], isGoogleUser: false };
         useAuthStore.setState({
             status: 'authenticated',
-            user: { id: '3', email: 'c@d.com', name: 'Out', roles: ['user'], isGoogleUser: false },
+            user,
         });
-        mocks.logout.mockImplementation(() => Promise.reject(new Error('network error')));
+        mocks.logout.mockRejectedValue(new Error('network error'));
 
-        await useAuthStore.getState().logout();
-        expect(useAuthStore.getState().status).toBe('anonymous');
-        expect(useAuthStore.getState().user).toBeNull();
+        await expect(useAuthStore.getState().logout()).rejects.toThrow('network error');
+        expect(useAuthStore.getState().status).toBe('authenticated');
+        expect(useAuthStore.getState().user).toEqual(user);
     });
 
     it('clear: resets status to anonymous and user to null', () => {

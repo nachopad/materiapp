@@ -1,12 +1,15 @@
+import { LogOut } from 'lucide-react';
+import { useCallback, useEffect } from 'react';
+
+import { useLogoutMutation } from '@/modules/auth/hooks/use-logout-mutation';
 import { MobilePageHeader } from '@/shared/components/mobile-page-header';
+import { Button } from '@/shared/components/ui/button';
 import { Separator } from '@/shared/components/ui/separator';
 import { Skeleton } from '@/shared/components/ui/skeleton';
-import { useCallback, useEffect } from 'react';
+
 import { AccountSection, ProfileHeader, ProgressSection, UniversitiesSection } from '../components';
 import { useUserStore } from '../store';
 import type { UserProfile } from '../types';
-import { LogOut } from 'lucide-react';
-import { Button } from '@/shared/components/ui/button';
 
 // Mock data for development (remove when backend is ready)
 const MOCK_USER: UserProfile = {
@@ -95,14 +98,31 @@ export default function ProfilePage() {
                 <ProgressSection careers={displayUser.careerProgress} />
             </div>
             <Separator className="mt-10 mb-10" />
+            <LogoutButton />
+        </>
+    );
+}
+
+function LogoutButton() {
+    const { mutate, isPending, isError } = useLogoutMutation();
+
+    return (
+        <div className="space-y-2">
             <Button
                 variant="outline"
                 className="bg-transparent! border-destructive! text-destructive! hover:bg-destructive! hover:text-white!"
+                disabled={isPending}
                 fullWidth
                 icon={<LogOut />}
+                onClick={() => mutate()}
             >
-                Cerrar sesión
+                {isPending ? 'Cerrando sesión...' : 'Cerrar sesión'}
             </Button>
-        </>
+            {isError && (
+                <p className="text-destructive text-sm text-center" role="alert">
+                    Error al cerrar sesión. Inténtalo de nuevo.
+                </p>
+            )}
+        </div>
     );
 }

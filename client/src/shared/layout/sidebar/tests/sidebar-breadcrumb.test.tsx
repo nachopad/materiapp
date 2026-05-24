@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { MemoryRouter } from 'react-router';
@@ -81,6 +82,25 @@ function getBreadcrumbItems(container: HTMLElement) {
     return Array.from(breadcrumbNav.querySelectorAll('li'));
 }
 
+function createTestQueryClient() {
+    return new QueryClient({
+        defaultOptions: {
+            queries: { retry: false },
+            mutations: { retry: false },
+        },
+    });
+}
+
+function renderSidebar(initialEntries: string[]) {
+    return render(
+        <QueryClientProvider client={createTestQueryClient()}>
+            <MemoryRouter initialEntries={initialEntries}>
+                <Sidebar />
+            </MemoryRouter>
+        </QueryClientProvider>,
+    );
+}
+
 /**
  * Tests for breadcrumb behavior at `/` vs other routes.
  * At `/`: breadcrumb should show ONLY "Inicio" (no previous item, no duplicate).
@@ -88,11 +108,7 @@ function getBreadcrumbItems(container: HTMLElement) {
  */
 describe('Sidebar breadcrumb at root', () => {
     it('shows only "Inicio" at root path without duplicate', () => {
-        const { container } = render(
-            <MemoryRouter initialEntries={['/']}>
-                <Sidebar />
-            </MemoryRouter>
-        );
+        const { container } = renderSidebar(['/']);
 
         const breadcrumbItems = getBreadcrumbItems(container);
         // At root: only 1 item (Inicio link), no separator + page
@@ -105,11 +121,7 @@ describe('Sidebar breadcrumb at root', () => {
     });
 
     it('does not duplicate "Inicio" in breadcrumb at root path', () => {
-        const { container } = render(
-            <MemoryRouter initialEntries={['/']}>
-                <Sidebar />
-            </MemoryRouter>
-        );
+        const { container } = renderSidebar(['/']);
 
         // Get ONLY breadcrumb "Inicio" - scope to breadcrumb nav
         const breadcrumbNav = container.querySelector('nav[data-slot="breadcrumb"]');
@@ -123,11 +135,7 @@ describe('Sidebar breadcrumb at root', () => {
 
 describe('Sidebar breadcrumb at other routes', () => {
     it('shows "Inicio > [Label]" at /progress', () => {
-        const { container } = render(
-            <MemoryRouter initialEntries={['/progress']}>
-                <Sidebar />
-            </MemoryRouter>
-        );
+        const { container } = renderSidebar(['/progress']);
 
         const breadcrumbItems = getBreadcrumbItems(container);
         // Should have 3 items: "Inicio" link, separator (icon), and "Progreso" page
@@ -143,11 +151,7 @@ describe('Sidebar breadcrumb at other routes', () => {
     });
 
     it('shows "Inicio > [Label]" at /universities', () => {
-        const { container } = render(
-            <MemoryRouter initialEntries={['/universities']}>
-                <Sidebar />
-            </MemoryRouter>
-        );
+        const { container } = renderSidebar(['/universities']);
 
         const breadcrumbItems = getBreadcrumbItems(container);
         expect(breadcrumbItems).toHaveLength(3);
@@ -157,11 +161,7 @@ describe('Sidebar breadcrumb at other routes', () => {
     });
 
     it('dynamically shows correct label for nested routes', () => {
-        const { container } = render(
-            <MemoryRouter initialEntries={['/profile/edit']}>
-                <Sidebar />
-            </MemoryRouter>
-        );
+        const { container } = renderSidebar(['/profile/edit']);
 
         const breadcrumbItems = getBreadcrumbItems(container);
         expect(breadcrumbItems).toHaveLength(3);

@@ -1,3 +1,8 @@
+import { Bell, ChevronsUpDown, CreditCard, LogOut, MoonIcon, SunIcon, UserCircle } from 'lucide-react';
+import { useTheme } from 'next-themes';
+import { Link } from 'react-router';
+
+import { useLogoutMutation } from '@/modules/auth/hooks/use-logout-mutation';
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/components/ui/avatar';
 import {
     DropdownMenu,
@@ -9,9 +14,6 @@ import {
     DropdownMenuTrigger,
 } from '@/shared/components/ui/dropdown-menu';
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/shared/components/ui/sidebar';
-import { Bell, ChevronsUpDown, CreditCard, LogOut, MoonIcon, SunIcon, UserCircle } from 'lucide-react';
-import { useTheme } from 'next-themes';
-import { Link } from 'react-router';
 
 interface SidebarFooterProps {
     user: {
@@ -25,6 +27,7 @@ export const SidebarFooterComponent = ({ user }: SidebarFooterProps) => {
     const { isMobile } = useSidebar();
     const { theme, setTheme } = useTheme();
     const isDark = theme === 'dark';
+    const { mutate, isPending, isError } = useLogoutMutation();
 
     const toggleTheme = () => {
         setTheme(isDark ? 'light' : 'dark');
@@ -93,10 +96,18 @@ export const SidebarFooterComponent = ({ user }: SidebarFooterProps) => {
                             </DropdownMenuItem>
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>
+                        <DropdownMenuItem
+                            disabled={isPending}
+                            onSelect={() => mutate()}
+                        >
                             <LogOut />
-                            Cerrar sesión
+                            {isPending ? 'Cerrando sesión...' : 'Cerrar sesión'}
                         </DropdownMenuItem>
+                        {isError && (
+                            <p className="text-destructive text-sm px-2 py-1.5 text-center" role="alert">
+                                Error al cerrar sesión. Inténtalo de nuevo.
+                            </p>
+                        )}
                     </DropdownMenuContent>
                 </DropdownMenu>
             </SidebarMenuItem>

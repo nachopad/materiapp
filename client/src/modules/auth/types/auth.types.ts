@@ -12,6 +12,8 @@ export interface AuthUser {
     name: string;
     roles: AuthRole[];
     isGoogleUser: boolean;
+    createdAt?: string;
+    updatedAt?: string;
 }
 
 export interface LoginCredentials {

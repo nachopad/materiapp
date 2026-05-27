@@ -2,12 +2,23 @@ import { api } from '@/core/api';
 
 import type { AuthUser, LoginCredentials } from '../types/auth.types';
 
+interface ApiEnvelope<T> {
+    _metadata: {
+        statusCode: number;
+        timestamp: string;
+        path: string;
+    };
+    data: T;
+}
+
 interface BackendUserResponse {
     _id: string;
     email: string;
     name: string;
     roles: string[];
-    isGoogleUser: boolean;
+    isGoogleUser?: boolean;
+    createdAt?: string;
+    updatedAt?: string;
 }
 
 function mapToAuthUser(data: unknown): AuthUser {
@@ -17,14 +28,16 @@ function mapToAuthUser(data: unknown): AuthUser {
         email: backend.email,
         name: backend.name,
         roles: backend.roles as AuthUser['roles'],
-        isGoogleUser: backend.isGoogleUser,
+        isGoogleUser: backend.isGoogleUser ?? false,
+        createdAt: backend.createdAt,
+        updatedAt: backend.updatedAt,
     };
 }
 
 export const authService = {
     async login(credentials: LoginCredentials): Promise<AuthUser> {
-        const response = await api.post<BackendUserResponse>('/auth/login', credentials);
-        return mapToAuthUser(response.data);
+        const response = await api.post<ApiEnvelope<BackendUserResponse>>('/auth/login', credentials);
+        return mapToAuthUser(response.data.data);
     },
 
     async logout(): Promise<void> {
@@ -32,8 +45,8 @@ export const authService = {
     },
 
     async profile(): Promise<AuthUser> {
-        const response = await api.get<BackendUserResponse>('/auth/profile');
-        return mapToAuthUser(response.data);
+        const response = await api.get<ApiEnvelope<BackendUserResponse>>('/auth/profile');
+        return mapToAuthUser(response.data.data);
     },
 
     async refresh(): Promise<void> {

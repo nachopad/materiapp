@@ -1,6 +1,9 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { MemoryRouter } from 'react-router';
+
+import { useAuthUser } from '@/modules/auth/hooks/use-auth';
+
 import HomePage from '../home.page';
 import type { DashboardHome } from '../../types';
 
@@ -22,7 +25,15 @@ vi.mock('@/assets/icons', () => ({
     Pity: () => <span data-testid="pity-icon" aria-hidden="true" />,
 }));
 
+vi.mock('@/modules/auth/hooks/use-auth', () => ({
+    useAuthUser: vi.fn(() => undefined),
+}));
+
 describe('HomePage', () => {
+    beforeEach(() => {
+        vi.mocked(useAuthUser).mockReturnValue(null);
+    });
+
     it('renders academic summary section with 4 KPI cards', () => {
         render(
             <MemoryRouter initialEntries={['/']}>
@@ -49,6 +60,54 @@ describe('HomePage', () => {
 
         expect(screen.getByText('¡Bienvenido, María!')).toBeInTheDocument();
         expect(screen.getByText('Aquí tienes un resumen de tu actividad académica')).toBeInTheDocument();
+    });
+
+    it('renders welcome header with auth user first name', () => {
+        vi.mocked(useAuthUser).mockReturnValue({
+            id: '1',
+            email: 'carlos@example.com',
+            name: 'Carlos Gomez',
+            roles: ['user'],
+            isGoogleUser: false,
+        });
+
+        render(
+            <MemoryRouter initialEntries={['/']}>
+                <HomePage />
+            </MemoryRouter>
+        );
+
+        expect(screen.getByText('¡Bienvenido, Carlos!')).toBeInTheDocument();
+    });
+
+    it('renders welcome header with fallback Usuario when auth user is undefined', () => {
+        vi.mocked(useAuthUser).mockReturnValue(null);
+
+        render(
+            <MemoryRouter initialEntries={['/']}>
+                <HomePage />
+            </MemoryRouter>
+        );
+
+        expect(screen.getByText('¡Bienvenido, Usuario!')).toBeInTheDocument();
+    });
+
+    it('renders welcome header with fallback Usuario when auth name is blank or whitespace', () => {
+        vi.mocked(useAuthUser).mockReturnValue({
+            id: '1',
+            email: 'carlos@example.com',
+            name: '   ',
+            roles: ['user'],
+            isGoogleUser: false,
+        });
+
+        render(
+            <MemoryRouter initialEntries={['/']}>
+                <HomePage />
+            </MemoryRouter>
+        );
+
+        expect(screen.getByText('¡Bienvenido, Usuario!')).toBeInTheDocument();
     });
 
     it('renders welcome header with pity.svg icon to the left of text', () => {

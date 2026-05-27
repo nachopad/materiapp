@@ -1,8 +1,10 @@
-import { AcademicSummarySection, CurrentSubjectsSection, ActiveCareersSection } from '../components';
-import type { DashboardHome } from '../types';
-import { useUserStore } from '@/modules/profile/store';
+import { useAuthUser } from '@/modules/auth/hooks/use-auth';
 import { Pity } from '@/assets/icons';
 import { Separator } from '@/shared/components/ui/separator';
+import { useUserStore } from '@/modules/profile/store';
+
+import { AcademicSummarySection, CurrentSubjectsSection, ActiveCareersSection } from '../components';
+import type { DashboardHome } from '../types';
 
 const MOCK_DASHBOARD: DashboardHome = {
     summary: {
@@ -39,11 +41,12 @@ export default function HomePage({
     dashboard?: DashboardHome;
     userName?: string;
 }) {
+    const authUser = useAuthUser();
     const { user } = useUserStore();
-    const displayName = userName || user?.fullName?.split(' ')[0] || 'Usuario';
+    const displayName = authUser?.name?.trim()?.split(' ')[0] || userName || user?.fullName?.trim()?.split(' ')[0] || 'Usuario';
 
     return (
-        <div className="container mx-auto max-w-3xl px-4 py-6 ">
+        <div className="container mx-auto max-w-3xl px-4 py-6">
             {/* Welcome header */}
             <div className="flex items-center gap-3">
                 <Pity className="h-10 w-10 shrink-0" aria-label="icono de bienvenida" />
@@ -53,7 +56,7 @@ export default function HomePage({
                 </div>
             </div>
             <Separator className="mt-4 mb-4" />
-            <div className='space-y-4'>
+            <div className="flex flex-col gap-4">
                 <AcademicSummarySection summary={dashboard.summary} />
                 <CurrentSubjectsSection subjects={dashboard.currentSubjects} />
                 <ActiveCareersSection careers={dashboard.activeCareersList} />

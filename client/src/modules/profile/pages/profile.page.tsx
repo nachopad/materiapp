@@ -1,6 +1,7 @@
 import { LogOut } from 'lucide-react';
-import { useCallback, useEffect } from 'react';
+import { useEffect } from 'react';
 
+import { useAuthUser } from '@/modules/auth/hooks/use-auth';
 import { useLogoutMutation } from '@/modules/auth/hooks/use-logout-mutation';
 import { MobilePageHeader } from '@/shared/components/mobile-page-header';
 import { Button } from '@/shared/components/ui/button';
@@ -45,18 +46,23 @@ export default function ProfilePage() {
         // fetchProfile();
     }, [fetchProfile]);
 
-    const handleChangePassword = useCallback(() => {
+    const handleChangePassword = () => {
         // TODO: Implement change password modal
         console.log('Change password clicked');
-    }, []);
+    };
 
-    const handleLinkGoogle = useCallback(() => {
+    const handleLinkGoogle = () => {
         // TODO: Implement Google OAuth flow
         console.log('Link Google clicked');
-    }, []);
+    };
 
     // Use mock data for now
-    const displayUser = user || MOCK_USER;
+    const baseProfile = user || MOCK_USER;
+    const authUser = useAuthUser();
+    const displayName = authUser?.name?.trim() || baseProfile.fullName;
+    const displayEmail = authUser?.email?.trim() || baseProfile.email;
+    const displayJoinedAt = user?.joinedAt || authUser?.createdAt || baseProfile.joinedAt;
+    const displayUser = { ...baseProfile, fullName: displayName, email: displayEmail, joinedAt: displayJoinedAt };
 
     if (isLoading) {
         return (

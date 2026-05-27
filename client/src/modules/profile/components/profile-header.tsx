@@ -1,9 +1,11 @@
-import { cn } from '@/shared/lib/utils';
-import type { UserProfile } from '../types';
-import { Button } from '@/shared/components/ui/button';
 import { Edit2 } from 'lucide-react';
-import { TooltipComponent } from '@/shared/components/ui/tooltip';
 import { Link } from 'react-router';
+
+import { Button } from '@/shared/components/ui/button';
+import { TooltipComponent } from '@/shared/components/ui/tooltip';
+import { cn } from '@/shared/lib/utils';
+
+import type { UserProfile } from '../types';
 
 interface ProfileHeaderProps {
     user: UserProfile;
@@ -23,7 +25,7 @@ export function ProfileHeader({ user, className }: ProfileHeaderProps) {
         <header className={cn('', className)}>
             <div className="space-y-1">
                 <div className="w-full flex items-center justify-between">
-                    <h1 className="text-3xl font-bold tracking-tight text-wrap">{user.fullName}</h1>
+                    <h1 className="text-3xl font-bold tracking-tight text-wrap min-w-0">{user.fullName}</h1>
                     <TooltipComponent text="Editar datos">
                         <Link to="/profile/edit">
                             <Button
